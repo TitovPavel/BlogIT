@@ -101,7 +101,7 @@ namespace BlogIT.MVC.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> ProfileSettings(string id)
         {
             User user = await _userManager.FindByIdAsync(id);
@@ -115,7 +115,7 @@ namespace BlogIT.MVC.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> ProfileSettings(ProfileSettingsViewModel model, IFormFile file)
         {
             if (ModelState.IsValid)
@@ -162,7 +162,7 @@ namespace BlogIT.MVC.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "user")]
+        [Authorize(Roles = "user, admin")]
         public async Task<IActionResult> Profile(string id)
         {
             User user = await _userManager.FindByIdAsync(id);

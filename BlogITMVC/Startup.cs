@@ -41,6 +41,8 @@ namespace BlogIT.MVC
 
             services.AddAutoMapper(typeof(Mappings.MappingProfile));
 
+            services.AddAuthorization();
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options => 
                 {
@@ -91,6 +93,8 @@ namespace BlogIT.MVC
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -22,10 +22,38 @@ namespace BlogIT.DB.DAL
             modelBuilder.ApplyConfiguration(new FileConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
 
+            const string ADMIN_ID = "2ea66a9a-1bf0-418a-a9f7-bb00b3a71955";
+            const string ROLE_ID = "ccfabe84-124f-473b-81a0-5da1d8ab4857";
 
             modelBuilder.Entity<IdentityRole>().HasData(
-                new IdentityRole("admin") { Id = "ccfabe84-124f-473b-81a0-5da1d8ab4857", ConcurrencyStamp = "81b2fd77-9615-4927-98f6-0c8dce30a290", NormalizedName = "ADMIN" },
+                new IdentityRole("admin") { Id = ROLE_ID, ConcurrencyStamp = "81b2fd77-9615-4927-98f6-0c8dce30a290", NormalizedName = "ADMIN" },
                 new IdentityRole("user") { Id = "53dda6a0-e534-4fac-b3d2-145a7c3e2752", ConcurrencyStamp = "8eb0db2d-383a-4d73-96a2-c1e29cf58af5", NormalizedName = "USER" });
+
+            User user = new User()
+            {
+                UserName = "Admin",
+                Id = ADMIN_ID,
+                ConcurrencyStamp = "9a9e2880-e7d9-4b64-add4-795ac26a36bb",
+                NormalizedUserName = "ADMIN",
+                Email = "Admin@admin.com",
+                NormalizedEmail = "ADMIN@ADMIN.COM",
+                EmailConfirmed = true,
+                SecurityStamp = string.Empty,
+                Sex = "0"
+            };
+
+            PasswordHasher<User> hasher = new PasswordHasher<User>();
+
+            user.PasswordHash = hasher.HashPassword(user, "Admin");
+
+
+            modelBuilder.Entity<User>().HasData(user);
+
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                RoleId = ROLE_ID,
+                UserId = ADMIN_ID
+            });
         }
     }
 
