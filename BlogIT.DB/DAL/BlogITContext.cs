@@ -14,6 +14,8 @@ namespace BlogIT.DB.DAL
         { }
 
         public DbSet<FileModel> Files { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<News> News { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,7 +23,14 @@ namespace BlogIT.DB.DAL
 
             modelBuilder.ApplyConfiguration(new FileConfiguration());
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new NewsConfiguration());
+            
+            Initialization(modelBuilder);
+        }
 
+        private void Initialization(ModelBuilder modelBuilder)
+        {
             const string ADMIN_ID = "2ea66a9a-1bf0-418a-a9f7-bb00b3a71955";
             const string ROLE_ID = "ccfabe84-124f-473b-81a0-5da1d8ab4857";
 
@@ -39,21 +48,25 @@ namespace BlogIT.DB.DAL
                 NormalizedEmail = "ADMIN@ADMIN.COM",
                 EmailConfirmed = true,
                 SecurityStamp = string.Empty,
-                Sex = "0"
+                Sex = "0",
+                PasswordHash = "AQAAAAEAACcQAAAAEHuKKBDgB7OXg5nK+FMQpZGrnKhE+xrcAP3G6dMGSsh4Xt4zIfTa15arL/soZkLu2A=="
             };
 
-            PasswordHasher<User> hasher = new PasswordHasher<User>();
-
-            user.PasswordHash = hasher.HashPassword(user, "Admin");
-
-
-            modelBuilder.Entity<User>().HasData(user);
+             modelBuilder.Entity<User>().HasData(user);
 
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
             {
                 RoleId = ROLE_ID,
                 UserId = ADMIN_ID
             });
+
+            modelBuilder.Entity<Category>().HasData(
+               new Category() { Id = 1, Title = "Java" },
+               new Category() { Id = 2, Title = "C#" },
+               new Category() { Id = 3, Title = "C++" },
+               new Category() { Id = 4, Title = "Algorithms" },
+               new Category() { Id = 5, Title = "Machine Learning" });
+
         }
     }
 
@@ -74,6 +87,34 @@ namespace BlogIT.DB.DAL
             builder.Property(p => p.Sex).IsRequired();
             builder.Property(p => p.Birthday).IsRequired();
             builder.HasOne(p => p.Avatar).WithOne().HasForeignKey<User>(p => p.AvatarId);
+        }
+    }
+
+    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    {
+        public void Configure(EntityTypeBuilder<Category> builder)
+        {
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.Title).IsRequired().HasMaxLength(256);
+        }
+    }
+
+    public class NewsConfiguration : IEntityTypeConfiguration<News>
+    {
+        public void Configure(EntityTypeBuilder<News> builder)
+        {
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.Title).IsRequired().HasMaxLength(1024);
+            builder.Property(p => p.DateTime).IsRequired();
+            builder.Property(p => p.Description).IsRequired().HasMaxLength(1024);
+            builder.Property(p => p.Tags).IsRequired().HasMaxLength(1024);
+            builder.Property(p => p.NewsText).IsRequired().HasMaxLength(10240);
+            builder.HasOne(p => p.Category)
+               .WithMany(t => t.News)
+               .HasForeignKey(p => p.CategoryId);
+            builder.HasOne(p => p.Writer)
+                .WithMany(t => t.News)
+                .HasForeignKey(p => p.WriterId);
         }
     }
 }

@@ -5,6 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200109100430_AddNews.cs" />
+    <Compile Remove="Migrations\20200109100430_AddNews.Designer.cs" />
+    <Compile Remove="Migrations\20200109101931_AddNews.cs" />
+    <Compile Remove="Migrations\20200109101931_AddNews.Designer.cs" />
+    <Compile Remove="Migrations\20200109102109_AddNews.cs" />
+    <Compile Remove="Migrations\20200109102109_AddNews.Designer.cs" />
+    <Compile Remove="Migrations\20200109102146_AddNews.cs" />
+    <Compile Remove="Migrations\20200109102146_AddNews.Designer.cs" />
+    <Compile Remove="Migrations\20200109102336_AddNews.cs" />
+    <Compile Remove="Migrations\20200109102336_AddNews.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />

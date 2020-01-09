@@ -17,6 +17,5 @@ namespace BlogIT.MVC.ViewModels
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }
-
     }
 }

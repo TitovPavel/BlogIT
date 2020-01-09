@@ -1,0 +1,58 @@
+﻿
+@model NewsListViewModel
+
+@{
+    ViewBag.Title = @Localizer["Title"];
+}
+
+<div class="section landing-section">
+    <div class="row" style="height: 100%;">
+        <div class="col-md-6 ml-auto mr-auto">
+
+            <div class="text-center">
+                <h2>@Localizer["Title"]</h2>
+            </div>
+
+            <div class="text-right">
+                <a asp-controller="News" asp-action="Create" class="nav-link">@Localizer["AddNews"]</a>
+            </div>
+
+            @if (Model.ItemNewsListViewModel.Count() > 0)
+            {
+
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ItemNewsListViewModel[0].DateTime)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ItemNewsListViewModel[0].Title)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ItemNewsListViewModel[0].Writer)
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model.ItemNewsListViewModel)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(model => item.DateTime)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => item.Writer)
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+                <page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+
+            }
+
+        </div>
+    </div>
+</div>

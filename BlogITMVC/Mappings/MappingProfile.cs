@@ -23,6 +23,8 @@ namespace BlogIT.MVC.Mappings
                 .ForMember(d => d.AvatarExist, o => o.MapFrom(s => (s.AvatarId != null)));
             CreateMap<User, ChangeRoleViewModel>()
                 .ForMember(d => d.UserId, o => o.MapFrom(s => s.Id));
+            CreateMap<News, ItemNewsListViewModel>();
+
         }
     }
 }

@@ -114,7 +114,9 @@ $(document).ready(function () {
     // Activate Tags(badges)
     // var tagClass = $('.tagsinput').attr('data-color');
     if ($(".tagsinput").length != 0) {
-        $(".tagsinput").tagsinput();
+        $(".tagsinput").tagsinput({
+            tagClass: 'tagsinput-add'
+        });
     }
     // $('.badge').addClass(''+ 'badge-' + tagClass);
 

@@ -37,8 +37,9 @@ namespace BlogIT.MVC
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<BlogITContext>();
 
+            services.AddTransient<INewsService, NewsService>();
             services.AddTransient<IPhotoService, PhotoService>();
-
+            
             services.AddAutoMapper(typeof(Mappings.MappingProfile));
 
             services.AddAuthorization();
