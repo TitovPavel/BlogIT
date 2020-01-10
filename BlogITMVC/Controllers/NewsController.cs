@@ -7,10 +7,12 @@ using BlogIT.DB.Models;
 using BlogIT.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BlogIT.MVC.Controllers
 {
     [Authorize(Roles = "admin")]
+    [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
     public class NewsController : Controller
     {
 
@@ -44,19 +46,25 @@ namespace BlogIT.MVC.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            CreateNewsViewModel createNewsViewModel = new CreateNewsViewModel();
+            createNewsViewModel.Categories = new SelectList(_newsService.GetCategories(), "Id", "Title");
+            return View(createNewsViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateUserViewModel createUserViewModel)
+        public IActionResult Create(CreateNewsViewModel createNewsViewModel)
         {
             if (ModelState.IsValid)
             {
 
+                News news = _mapper.Map<News>(createNewsViewModel);
+
+                int newsId =_newsService.AddNews(news);
+
                 return RedirectToAction("Index");
             }
 
-            return View(createUserViewModel);
+            return View(createNewsViewModel);
         }
     }
 }

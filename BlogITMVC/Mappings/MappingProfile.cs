@@ -24,6 +24,7 @@ namespace BlogIT.MVC.Mappings
             CreateMap<User, ChangeRoleViewModel>()
                 .ForMember(d => d.UserId, o => o.MapFrom(s => s.Id));
             CreateMap<News, ItemNewsListViewModel>();
+            CreateMap<CreateNewsViewModel, News>();
 
         }
     }
