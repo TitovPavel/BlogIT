@@ -47,16 +47,13 @@
                             </div>
                             <div class="form-group">
                                 <label asp-for="Tags" class="control-label"></label>
-                                <input asp-for="Tags" class="tagsinput" data-color="success" type="text" value="" data-role="tagsinput" style="display: none;" id="tags">
+                                <input asp-for="Tags" class="tagsinput" data-color="success" type="text" data-role="tagsinput" style="display: none;" id="tags" value = Model?.Tags>
                                 <span asp-validation-for="Tags" class="text-danger"></span>
                             </div>
 
 
                             <div class="form-group">
                                 <label asp-for="NewsText" class="control-label"></label>
-
-                                <!--<textarea asp-for="NewsText" class="form-control" id="wysiwyg" rows="5" cols="80"></textarea>-->
-
 
                                 <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
                                     <div class="btn-group">
@@ -127,7 +124,7 @@
                                 </div>
 
                                 <div id="editor">
-                                    @Model?.NewsText
+                                    @Html.Raw(@Model?.NewsText)
                                 </div>
 
                                 <input asp-for="NewsText" class="form-control" type="hidden" />

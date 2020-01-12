@@ -64,6 +64,7 @@ namespace BlogIT.MVC.Controllers
                 return RedirectToAction("Index");
             }
 
+            createNewsViewModel.Categories = new SelectList(_newsService.GetCategories(), "Id", "Title");
             return View(createNewsViewModel);
         }
     }
