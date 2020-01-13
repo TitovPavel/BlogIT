@@ -10,5 +10,7 @@ namespace BlogIT.DB.BL
         IQueryable<News> ListAll();
         IEnumerable GetCategories();
         int AddNews(News news);
+        News GetNewsById(int id);
+        void DeleteNewsById(int id);
     }
 }

@@ -6,5 +6,6 @@ namespace BlogIT.MVC.ViewModels
     {
         public List<ItemNewsListViewModel> ItemNewsListViewModel { get; set; }
         public PageViewModel PageViewModel { get; set; }
+        public SortNewsViewModel SortNewsViewModel { get; set; }
     }
 }

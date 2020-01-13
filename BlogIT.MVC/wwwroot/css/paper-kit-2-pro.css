@@ -3306,7 +3306,7 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
 #modals .btn,
 .btn[data-toggle="tooltip"],
 .btn[data-toggle="popover"] {
-    margin-bottom: 10px;
+    /*    margin-bottom: 10px;*/
 }
 
 #modals .btn {

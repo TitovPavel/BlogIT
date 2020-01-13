@@ -11,10 +11,10 @@ namespace MyPartyCore.Controllers
     {
 
         private readonly IPhotoService _photoService;
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
 
         public FileController(IPhotoService photoService,
-            IHostingEnvironment environment)
+            IWebHostEnvironment environment)
         {
             _photoService = photoService;
             _environment = environment;

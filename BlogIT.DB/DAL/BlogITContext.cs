@@ -109,6 +109,7 @@ namespace BlogIT.DB.DAL
             builder.Property(p => p.Description).IsRequired().HasMaxLength(1024);
             builder.Property(p => p.Tags).IsRequired().HasMaxLength(1024);
             builder.Property(p => p.NewsText).IsRequired().HasMaxLength(10240);
+            builder.Property(p => p.Deleted).IsRequired().HasDefaultValue(false);
             builder.HasOne(p => p.Category)
                .WithMany(t => t.News)
                .HasForeignKey(p => p.CategoryId);
