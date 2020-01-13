@@ -25,6 +25,14 @@ namespace BlogIT.MVC.Mappings
                 .ForMember(d => d.UserId, o => o.MapFrom(s => s.Id));
             CreateMap<News, ItemNewsListViewModel>();
             CreateMap<CreateNewsViewModel, News>();
+            CreateMap<News, NewsViewModel>()
+                .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title));
+            CreateMap<User, ChangeRoleViewModel>()
+                .ForMember(d => d.UserId, o => o.MapFrom(s => s.Id));
+            CreateMap<ChatMessage, ChatMessageViewModel>()
+                .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.UserName))
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString()))
+                .ForMember(d => d.AvatarPath, o => o.MapFrom(s => s.User.Avatar != null ? $"/{s.User.Avatar.Path}" : "/Files/placeholder.jpg"));
 
         }
     }

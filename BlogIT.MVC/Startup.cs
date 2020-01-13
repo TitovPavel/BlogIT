@@ -2,6 +2,7 @@ using AutoMapper;
 using BlogIT.DB.BL;
 using BlogIT.DB.DAL;
 using BlogIT.DB.Models;
+using BlogIT.MVC.SignalR;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -51,7 +52,9 @@ namespace BlogIT.MVC
                 });
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-         
+
+            services.AddSignalR(options => options.EnableDetailedErrors = true);
+
             services.AddControllersWithViews()
                 .AddDataAnnotationsLocalization()
                 .AddViewLocalization(
@@ -101,6 +104,7 @@ namespace BlogIT.MVC
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

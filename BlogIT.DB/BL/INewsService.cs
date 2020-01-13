@@ -12,5 +12,7 @@ namespace BlogIT.DB.BL
         int AddNews(News news);
         News GetNewsById(int id);
         void DeleteNewsById(int id);
+        void AddMessageChat(ChatMessage chatMessage);
+        IQueryable<ChatMessage> GetChatMessagesByPartyId(int partyId);
     }
 }

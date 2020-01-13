@@ -140,3 +140,14 @@ div[data-role="editor-toolbar"] {
 img {
     max-width: 100%;
 }
+
+.nav-down {
+    position: fixed;
+    top: 0;
+    transition: top 0.5s ease-in-out;
+    width: 100%;
+}
+
+.nav-up {
+    top: -80px;
+}

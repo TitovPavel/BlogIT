@@ -105,7 +105,7 @@ namespace BlogIT.MVC.Controllers
         {
 
             News news = _newsService.GetNewsById(id);
-            ItemNewsListViewModel itemNewsListViewModel = _mapper.Map<ItemNewsListViewModel>(news);
+            NewsViewModel itemNewsListViewModel = _mapper.Map<NewsViewModel>(news);
           
             return View(itemNewsListViewModel);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BlogIT.DB.Models
 {
@@ -15,6 +16,6 @@ namespace BlogIT.DB.Models
         public Category Category { get; set; }
         public int CategoryId { get; set; }
         public bool Deleted { get; set; }
-
+        public List<ChatMessage> ChatMessages { get; set; }
     }
 }

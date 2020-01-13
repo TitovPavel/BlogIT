@@ -1,5 +1,6 @@
 ﻿using BlogIT.DB.DAL;
 using BlogIT.DB.Models;
+using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Linq;
 
@@ -37,12 +38,24 @@ namespace BlogIT.DB.BL
 
         public News GetNewsById(int id)
         {
-            return _context.News.Find(id);
+            return _context.News.Include(p => p.Category).SingleOrDefault(p => p.Id == id);
         }
 
         public IQueryable<News> ListAll()
         {
             return _context.News.Where(x => !x.Deleted);
         }
+
+        public void AddMessageChat(ChatMessage chatMessage)
+        {
+            _context.ChatMessages.Add(chatMessage);
+            _context.SaveChanges();
+        }
+
+        public IQueryable<ChatMessage> GetChatMessagesByPartyId(int newsId)
+        {
+            return _context.ChatMessages.Where(c => c.NewsId == newsId).Include(i => i.User).ThenInclude(i => i.Avatar);
+        }
+
     }
 }

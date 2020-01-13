@@ -16,6 +16,7 @@ namespace BlogIT.DB.DAL
         public DbSet<FileModel> Files { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<News> News { get; set; }
+	public DbSet<ChatMessage> ChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,7 +26,8 @@ namespace BlogIT.DB.DAL
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new NewsConfiguration());
-            
+            modelBuilder.ApplyConfiguration(new ChatMessageConfiguration());
+
             Initialization(modelBuilder);
         }
 
@@ -118,5 +120,21 @@ namespace BlogIT.DB.DAL
                 .HasForeignKey(p => p.WriterId);
         }
     }
+
+	public class ChatMessageConfiguration : IEntityTypeConfiguration<ChatMessage>
+    {
+        public void Configure(EntityTypeBuilder<ChatMessage> builder)
+        {
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.Date).IsRequired();
+            builder.Property(p => p.Message).IsRequired().HasMaxLength(1024);
+            builder.HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId);
+            builder.HasOne(p => p.News)
+                .WithMany(t => t.ChatMessages)
+                .HasForeignKey(p => p.NewsId);
+        }
+    }	
 }
 

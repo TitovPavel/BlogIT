@@ -1,63 +1,181 @@
-﻿@model BlogIT.MVC.ViewModels.ItemNewsListViewModel
+﻿@model BlogIT.MVC.ViewModels.NewsViewModel
+@using Microsoft.AspNetCore.Identity
+@using BlogIT.DB.Models
+@using BlogIT.DB.BL
+@inject UserManager<User> UserManager
+@inject IPhotoService _photoService
 
 @{
-    Layout = null;
+    string userId = UserManager.GetUserId(User);
+    string imgFilePath = await _photoService.GetPathAvatarByUserId(userId);
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>View</title>
-</head>
-<body>
-
-<div>
-    <h4>ItemNewsListViewModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DateTime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DateTime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Writer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Writer)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category)
-        </dd>
-    </dl>
+<div class="page-header page-header-xs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px);">
+    <div class="filter"></div>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+
+<div class="main">
+    <div class="section section-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 ml-auto mr-auto">
+                    <div class="text-center">
+                        <a>
+                            <h2 class="title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Title</font></font></h2>
+                        </a>
+                        <span class="badge badge-warning main-tag"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Category</font></font></span>
+                        <h6 class="title-uppercase">
+                            <font style="vertical-align: inherit;">@Model.DateTime.ToString("D")</font>
+                        </h6>
+                    </div>
+                    <br>
+                </div>
+                <div class="col-md-8 ml-auto mr-auto">
+                    <div class="article-content">
+                        @Html.Raw(@Model?.NewsText)
+                    </div>
+                    <br>
+                    <div class="article-footer">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Метки:</font></font></h5>
+                                    <span class="label label-default"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Мотивационный </font></font></span>
+                                    <span class="label label-default"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">бюллетень </font></font></span>
+                                    <span class="badge badge-warning"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Тенденции</font></font></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="section-gray">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-8 ml-auto mr-auto">
+                                    <h3 class="text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Оставьте свой комментарий</font></font></h3>
+                                    <div class="media media-post">
+                                        <a class="pull-left author" href="#" width="30" height="30">
+                                            <div class="profile-photo-small">
+                                                <img src="~/@imgFilePath" class="img-circle img-responsive img-no-padding image-circle-dropdown">
+                                            </div>
+                                        </a>
+
+                                        <div class="media-body">
+                                            <input data-val="true" id="NewsId" name="NewsId" type="hidden" value=@Model.Id>
+                                            <textarea id="message" class="form-control border-input" placeholder="Write some nice stuff or nothing..." rows="4"></textarea>
+                                            <div class="media-footer">
+                                                <a href="" id="send" class="btn btn-info btn-wd pull-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Оставьте комментарий</font></font></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comments media-area media-area-small" id="chatList">
+
+                        <h3 class="text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Комментарии</font></font></h3>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
-</html>
+
+@section Scripts {
+
+    <script>
+        $(window).ready(function () {
+            $('body').removeClass('full-screen');
+            $('body').addClass('blog-post');
+        });
+
+
+    </script>
+
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+
+    <script type="text/javascript">
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chat")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        let newsId = Number(document.getElementById("NewsId").value);
+
+
+        connection.on("ReceiveMessage", function (chatMessage) {
+            appendLine(chatMessage);
+        });
+
+        connection.start().then(function () {
+            connection.invoke("ConnectUser", newsId);
+        });
+
+        document.getElementById("send").addEventListener("click", function (event) {
+
+            let message = document.getElementById("message").value;
+            connection.invoke("SendMessage", message, newsId);
+            $('#message').val('');
+            event.preventDefault();
+
+        });
+
+        function appendLine(chatMessage) {
+
+            let media = document.createElement('div');
+            media.classList.add("media");
+
+            let aImage = document.createElement('a');
+            aImage.classList.add("pull-left");
+
+            let profilePhotoSmall = document.createElement('div');
+            profilePhotoSmall.classList.add("profile-photo-small");
+
+            let profileImg = document.createElement('img');
+            profileImg.classList.add("img-circle");
+            profileImg.classList.add("img-responsive");
+            profileImg.classList.add("img-no-padding");
+            profileImg.classList.add("image-circle-dropdown");
+            profileImg.src = chatMessage.avatarPath;
+
+            profilePhotoSmall.append(profileImg);
+
+            aImage.append(profilePhotoSmall);
+
+            media.append(aImage);
+
+            let mediaBody = document.createElement('div');
+            mediaBody.classList.add("media-body");
+
+            let mediaHeading = document.createElement('h5');
+            mediaHeading.classList.add("media-heading");
+            mediaHeading.textContent = chatMessage.userName;
+            mediaBody.append(mediaHeading);
+
+            let pullRight = document.createElement('div');
+            pullRight.classList.add("pull-right");
+
+            let h6Date = document.createElement('h6');
+            h6Date.classList.add("text-muted");
+            h6Date.textContent = chatMessage.date;
+            pullRight.append(h6Date);
+
+            mediaBody.append(pullRight);
+
+            let pMessage = document.createElement('p');
+            pMessage.textContent = chatMessage.message;
+            mediaBody.append(pMessage);
+
+
+            media.append(mediaBody);
+
+            document.getElementById('chatList').append(media);
+        };
+    </script>
+
+}
