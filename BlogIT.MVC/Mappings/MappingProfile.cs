@@ -33,6 +33,9 @@ namespace BlogIT.MVC.Mappings
                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.UserName))
                 .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString()))
                 .ForMember(d => d.AvatarPath, o => o.MapFrom(s => s.User.Avatar != null ? $"/{s.User.Avatar.Path}" : "/Files/placeholder.jpg"));
+            CreateMap<News, NewsAnnotationViewModel>()
+                .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title))
+                .ForMember(d => d.CountsOfComments, o => o.MapFrom(s => s.ChatMessages.Count));
 
         }
     }

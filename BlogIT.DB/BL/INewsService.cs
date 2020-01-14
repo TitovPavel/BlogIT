@@ -14,5 +14,7 @@ namespace BlogIT.DB.BL
         void DeleteNewsById(int id);
         void AddMessageChat(ChatMessage chatMessage);
         IQueryable<ChatMessage> GetChatMessagesByPartyId(int partyId);
+        IQueryable<News> GetLastNews(int count);
+        IQueryable<News> GetTopNews(int count);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BlogIT.DB.DAL;
 using BlogIT.DB.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections;
 using System.Linq;
 
@@ -57,5 +58,21 @@ namespace BlogIT.DB.BL
             return _context.ChatMessages.Where(c => c.NewsId == newsId).Include(i => i.User).ThenInclude(i => i.Avatar);
         }
 
+        public IQueryable<News> GetLastNews(int count)
+        {
+            return _context.News
+                .Where(x => x.DateTime<=DateTime.Now && !x.Deleted)
+                .OrderByDescending(s => s.DateTime)
+                .Take(count)
+                .Include(i => i.Category)
+                .Include(i => i.ChatMessages);
+        }
+
+        public IQueryable<News> GetTopNews(int count)
+        {
+            return _context.News
+                .Take(count)
+                .Include(i => i.Category);
+        }
     }
 }
