@@ -65,6 +65,23 @@ namespace BlogIT.MVC.Helpers
 
             tagDivCardCategory.InnerHtml.AppendHtml(tagDivDateTime);
 
+            if (NewsView.CountsOfComments > 0)
+            {
+
+                TagBuilder tagDivCountComments = new TagBuilder("div");
+                tagDivCountComments.AddCssClass("pull-right");
+
+                TagBuilder tagCountComments = new TagBuilder("h6");
+                tagCountComments.AddCssClass("text-muted");
+                tagCountComments.InnerHtml.Append(NewsView.CountsOfComments.ToString() + " comments");
+
+
+                tagDivCountComments.InnerHtml.AppendHtml(tagCountComments);
+
+                tagDivCardCategory.InnerHtml.AppendHtml(tagDivCountComments);
+
+            }
+
 
             tagDivCardBody.InnerHtml.AppendHtml(tagDivCardCategory);
 

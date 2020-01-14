@@ -1,0 +1,83 @@
+﻿@model HomeNewsListViewModel
+
+@{
+    ViewBag.Title = @Localizer["Title"];
+}
+
+<div class="page-header page-header-xs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px);">
+    <div class="filter"></div>
+</div>
+
+<div class="main">
+    <div class="section section-white">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-md-6 ml-auto mr-auto">
+                    <form method="get">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="form-group">
+                                        <select id="CategoryId" name="CategoryId" asp-items="Model.FilterNewsViewModel.Categories" class="form-control form-control-sm" value="@Model.FilterNewsViewModel.CategoryId">
+                                            <option value="0">@Localizer["AllCategories"]</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="FindString" name="FindString" class="form-control form-control-sm" value="@Model.FilterNewsViewModel.FindString" placeholder="@Localizer["Find"]" />
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="Tags" name="Tags" class="tagsinput" data-color="success" type="text" data-role="tagsinput" style="display: none;" value="@Model.FilterNewsViewModel.Tags">
+                                    </div>
+                                    <div class="custom-control custom-switch form-group">
+                                        <input id="FindByComments" name="FindByComments" class="custom-control-input" type="checkbox" value="true" data-val="true" @(@Model.FilterNewsViewModel.FindByComments ? "checked=\"checked\"" : "") />
+                                        <label for="FindByComments" class="custom-control-label">@Localizer["FindByComments"]</label>
+                                    </div>
+
+
+                                    <input type="submit" value="Фильтр" class="btn btn-outline-default btn-round btn-sm" />
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <input type="hidden" name="DateCalendar" id="DateCalendar">
+                                <div id="myCalendar" class="vanilla-calendar"></div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+
+            <hr>
+
+            @foreach (NewsAnnotationViewModel news in Model.NewsAnnotation)
+            {
+                <news news-view="news" controller-name="News" action-name="Index"></news>
+                <hr>
+            }
+
+            <page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $(window).ready(function () {
+            $('body').removeClass('full-screen');
+            $('body').addClass('blog-posts');
+        });
+
+        let myCalendar = new VanillaCalendar({
+            selector: "#myCalendar",
+            onSelect: (data, elem) => {
+                $('#DateCalendar').val(data.date);
+            }
+        })
+    </script>
+}
