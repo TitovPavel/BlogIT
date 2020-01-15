@@ -6,6 +6,7 @@ using BlogIT.MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BlogIT.MVC.Controllers
@@ -35,13 +36,18 @@ namespace BlogIT.MVC.Controllers
             return View(homePageViewModel);
         }
 
-        public IActionResult List(string findString, string tags, int categoryId = 0, bool findByComments = false, int page = 1)
+        public IActionResult List(string findString, string tags, DateTime dateCalendar, int categoryId = 0, bool findByComments = false, int page = 1)
         {
 
             int pageSize = 3;
 
             IQueryable<News> source = _newsService.ListAll();
 
+
+            if(dateCalendar> DateTime.MinValue)
+            {
+                source = source.Where(p => p.DateTime.Date == dateCalendar.Date);
+            }
             if (categoryId != 0)
             {
                 source = source.Where(p => p.CategoryId == categoryId);
@@ -56,10 +62,10 @@ namespace BlogIT.MVC.Controllers
 
             PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
 
-            FilterNewsViewModel filterNewsViewModel = new FilterNewsViewModel(findString, tags, categoryId, findByComments)
-            {
-                Categories = new SelectList(_newsService.GetCategories(), "Id", "Title", categoryId)
-            };
+            List<Category> listCategories = _newsService.GetCategories();
+
+            FilterNewsViewModel filterNewsViewModel = new FilterNewsViewModel(listCategories, findString, tags, dateCalendar, categoryId, findByComments);
+
 
             HomeNewsListViewModel homeNewsListViewModel = new HomeNewsListViewModel
             {

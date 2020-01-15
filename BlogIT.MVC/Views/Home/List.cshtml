@@ -19,12 +19,11 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <div class="form-group">
-                                        <select id="CategoryId" name="CategoryId" asp-items="Model.FilterNewsViewModel.Categories" class="form-control form-control-sm" value="@Model.FilterNewsViewModel.CategoryId">
-                                            <option value="0">@Localizer["AllCategories"]</option>
+                                        <select id="CategoryId" name="CategoryId" asp-items="Model.FilterNewsViewModel.Categories" class="form-control" value="@Model.FilterNewsViewModel.CategoryId">
                                         </select>
                                     </div>
                                     <div class="form-group">
-                                        <input id="FindString" name="FindString" class="form-control form-control-sm" value="@Model.FilterNewsViewModel.FindString" placeholder="@Localizer["Find"]" />
+                                        <input id="FindString" name="FindString" class="form-control" value="@Model.FilterNewsViewModel.FindString" placeholder="@Localizer["Find"]" />
                                     </div>
                                     <div class="form-group">
                                         <input id="Tags" name="Tags" class="tagsinput" data-color="success" type="text" data-role="tagsinput" style="display: none;" value="@Model.FilterNewsViewModel.Tags">
@@ -35,7 +34,6 @@
                                     </div>
 
 
-                                    <input type="submit" value="Фильтр" class="btn btn-outline-default btn-round btn-sm" />
                                 </div>
 
                             </div>
@@ -45,11 +43,24 @@
 
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="submit" value="Фильтр" class="btn btn-outline-default btn-round btn-sm" />
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
 
-            <page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+            <page-link page-url-categoryId="@(Model.FilterNewsViewModel.CategoryId)"
+                       page-url-findString="@(Model.FilterNewsViewModel.FindString)"
+                       page-url-tags="@(Model.FilterNewsViewModel.Tags)"
+                       page-url-findByComments="@(Model.FilterNewsViewModel.FindByComments)"
+                       page-url-dateCalendar="@(Model.FilterNewsViewModel.DateCalendar)"
+                       page-model="Model.PageViewModel"
+                       page-action="List">
+
+            </page-link>
 
             <hr>
 
@@ -59,7 +70,15 @@
                 <hr>
             }
 
-            <page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+            <page-link page-url-categoryId="@(Model.FilterNewsViewModel.CategoryId)"
+                       page-url-findString="@(Model.FilterNewsViewModel.FindString)"
+                       page-url-tags="@(Model.FilterNewsViewModel.Tags)"
+                       page-url-findByComments="@(Model.FilterNewsViewModel.FindByComments)"
+                       page-url-dateCalendar="@(Model.FilterNewsViewModel.DateCalendar)"
+                       page-model="Model.PageViewModel"
+                       page-action="List">
+
+            </page-link>
 
         </div>
     </div>
@@ -73,8 +92,11 @@
             $('body').addClass('blog-posts');
         });
 
+        let dateCalendar = new Date("@(Model.FilterNewsViewModel.DateCalendar==DateTime.MinValue? DateTime.Now.ToString("s") : Model.FilterNewsViewModel.DateCalendar.ToString("s"))")
+
         let myCalendar = new VanillaCalendar({
-            selector: "#myCalendar",
+            selector: "#myCalendar",     
+            date: dateCalendar,
             onSelect: (data, elem) => {
                 $('#DateCalendar').val(data.date);
             }

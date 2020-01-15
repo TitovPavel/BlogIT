@@ -47,7 +47,7 @@ let VanillaCalendar = (function () {
             let dateElem = document.createElement('span')
             dateElem.innerHTML = date.getDate()
             newDayElem.className = 'vanilla-calendar-date'
-            newDayElem.setAttribute('data-calendar-date', date)
+            newDayElem.setAttribute('data-calendar-date', date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2))
             
             let available_week_day = opts.availableWeekDays.filter(f => f.day === date.getDay() || f.day === getWeekDay(date.getDay()))
             let available_date = opts.availableDates.filter(f => f.date === (date.getFullYear() + '-' + String(date.getMonth() + 1).padStart('2', 0) + '-' + String(date.getDate()).padStart('2', 0)))

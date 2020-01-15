@@ -3,6 +3,7 @@ using BlogIT.DB.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BlogIT.DB.BL
@@ -32,9 +33,9 @@ namespace BlogIT.DB.BL
             }
         }
 
-        public IEnumerable GetCategories()
+        public List<Category> GetCategories()
         {
-            return _context.Categories;
+            return _context.Categories.ToList();
         }
 
         public News GetNewsById(int id)
