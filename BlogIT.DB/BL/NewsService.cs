@@ -19,6 +19,30 @@ namespace BlogIT.DB.BL
 
         public int AddNews(News news)
         {
+
+            string[] tags = news.Tags.Split(',');
+            news.NewsTag = new List<NewsTag>();
+
+            foreach (string tagTitle in tags)
+            {
+                Tag tag = _context.Tags.FirstOrDefault(p => p.Title == tagTitle);
+                if (tag == null)
+                {
+                    tag = new Tag()
+                    {
+                        Title = tagTitle
+                    };
+                }
+
+                news.NewsTag.Add(
+                    new NewsTag()
+                    {
+                        News = news,
+                        Tag = tag
+                    }
+                );
+            };
+
             _context.News.Add(news);
             _context.SaveChanges();
             return news.Id;
@@ -27,7 +51,8 @@ namespace BlogIT.DB.BL
         public void DeleteNewsById(int id)
         {
             News news = GetNewsById(id);
-            if (news != null) {
+            if (news != null)
+            {
                 _context.News.Remove(news);
                 _context.SaveChanges();
             }
@@ -40,7 +65,11 @@ namespace BlogIT.DB.BL
 
         public News GetNewsById(int id)
         {
-            return _context.News.Include(p => p.Category).SingleOrDefault(p => p.Id == id);
+            return _context.News
+                .Include(p => p.Category)
+                .Include(p => p.NewsTag)
+                .ThenInclude(p => p.Tag)
+                .SingleOrDefault(p => p.Id == id);
         }
 
         public IQueryable<News> ListAll()
@@ -62,7 +91,7 @@ namespace BlogIT.DB.BL
         public IQueryable<News> GetLastNews(int count)
         {
             return _context.News
-                .Where(x => x.DateTime<=DateTime.Now && !x.Deleted)
+                .Where(x => x.DateTime <= DateTime.Now && !x.Deleted)
                 .OrderByDescending(s => s.DateTime)
                 .Take(count)
                 .Include(i => i.Category)
@@ -74,6 +103,16 @@ namespace BlogIT.DB.BL
             return _context.News
                 .Take(count)
                 .Include(i => i.Category);
+        }
+
+        public IQueryable<News> ListActualNews(bool includeChatMessage = false)
+        {
+            IQueryable<News> news = ListAll().Where(p => p.DateTime <= DateTime.Now);
+            if (includeChatMessage)
+            {
+                news = news.Include(i => i.ChatMessages);
+            }
+            return news;
         }
     }
 }

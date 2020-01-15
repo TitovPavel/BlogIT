@@ -2,11 +2,24 @@
 using BlogIT.MVC.ViewModels;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BlogIT.MVC.Helpers
 {
     public class NewsTagHelper : TagHelper
     {
+        private IUrlHelperFactory urlHelperFactory;
+        public NewsTagHelper(IUrlHelperFactory helperFactory)
+        {
+            urlHelperFactory = helperFactory;
+        }
+
+        [ViewContext]
+        [HtmlAttributeNotBound]
+        public ViewContext ViewContext { get; set; }
+
 
         public NewsAnnotationViewModel NewsView { get; set; }
         public string ControllerName { get; set; }
@@ -14,6 +27,9 @@ namespace BlogIT.MVC.Helpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
+
+            IUrlHelper urlHelper = urlHelperFactory.GetUrlHelper(ViewContext);
+
             output.TagName = "div";
             output.Attributes.SetAttribute("class", "article");
 
@@ -30,7 +46,7 @@ namespace BlogIT.MVC.Helpers
             tagDivCardBody.AddCssClass("card-body");
 
             TagBuilder tagTitle = new TagBuilder("a");
-            tagTitle.Attributes.Add("href", String.Concat("/", ControllerName, "/", ActionName, "/", NewsView.Id));
+            tagTitle.Attributes["href"] = urlHelper.Action(ActionName, ControllerName, new  {id = NewsView.Id });
 
             TagBuilder tagCardTitle = new TagBuilder("h3");
             tagCardTitle.AddCssClass("card-title");
@@ -45,12 +61,18 @@ namespace BlogIT.MVC.Helpers
             TagBuilder tagDivCardCategory = new TagBuilder("div");
             tagDivCardCategory.AddCssClass("card-category");
 
+            TagBuilder tagACategory = new TagBuilder("a");
+            tagACategory.Attributes["href"] = urlHelper.Action("List", "Home", new { CategoryId = NewsView.CategoryId });
+
+
             TagBuilder tagSpan = new TagBuilder("span");
             tagSpan.AddCssClass("badge badge-primary main-tag");
             tagSpan.InnerHtml.Append(NewsView.Category);
 
+            tagACategory.InnerHtml.AppendHtml(tagSpan);
 
-            tagDivCardCategory.InnerHtml.AppendHtml(tagSpan);
+
+            tagDivCardCategory.InnerHtml.AppendHtml(tagACategory);
 
 
             TagBuilder tagDivDateTime = new TagBuilder("div");

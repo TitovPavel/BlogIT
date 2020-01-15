@@ -92,11 +92,15 @@
             $('body').addClass('blog-posts');
         });
 
-        let dateCalendar = new Date("@(Model.FilterNewsViewModel.DateCalendar==DateTime.MinValue? DateTime.Now.ToString("s") : Model.FilterNewsViewModel.DateCalendar.ToString("s"))")
+        let dateCalendar = new Date("@(Model.FilterNewsViewModel.DateCalendar == DateTime.MinValue? DateTime.Now.Date.ToString("s") : Model.FilterNewsViewModel.DateCalendar.Date.ToString("s"))")
+        let selectDate = new Date("@(Model.FilterNewsViewModel.DateCalendar.Date.ToString("s"))")
+        let dateNow = new Date("@(DateTime.Now.Date.ToString("s") )")
 
         let myCalendar = new VanillaCalendar({
             selector: "#myCalendar",     
             date: dateCalendar,
+            selectDate: selectDate,
+            todaysDate: dateNow,
             onSelect: (data, elem) => {
                 $('#DateCalendar').val(data.date);
             }

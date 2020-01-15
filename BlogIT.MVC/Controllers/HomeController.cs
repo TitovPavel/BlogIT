@@ -41,7 +41,7 @@ namespace BlogIT.MVC.Controllers
 
             int pageSize = 3;
 
-            IQueryable<News> source = _newsService.ListAll();
+            IQueryable<News> source = _newsService.ListActualNews(findByComments);
 
 
             if(dateCalendar> DateTime.MinValue)
@@ -52,9 +52,18 @@ namespace BlogIT.MVC.Controllers
             {
                 source = source.Where(p => p.CategoryId == categoryId);
             }
+            if (!String.IsNullOrEmpty(tags))
+            {
+                string[] tagsArray = tags.Split(',');
+
+                foreach (string tagTitle in tagsArray)
+                {
+                    source = source.Where(p => p.NewsTag.Any(s => s.Tag.Title.ToUpper() == tagTitle.ToUpper()));
+                }
+            }
             if (!String.IsNullOrEmpty(findString))
             {
-                source = source.Where(p => p.Title.Contains(findString));
+                source = source.Where(p => p.Title.Contains(findString)|| p.Description.Contains(findString) || p.NewsText.Contains(findString) || (findByComments && p.ChatMessages.Any(p => p.Message.Contains(findString))));
             }
 
             var count = source.Count();

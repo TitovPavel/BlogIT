@@ -10,7 +10,11 @@
     string imgFilePath = await _photoService.GetPathAvatarByUserId(userId);
 }
 
-<div class="page-header page-header-xs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px);">
+@{
+    ViewBag.Title = @Localizer["Title"];
+}
+
+<div class="page-header-15 page-header page-header-xs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px); min-height: 15vh !important;">
     <div class="filter"></div>
 </div>
 
@@ -23,7 +27,11 @@
                         <a>
                             <h2 class="title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Title</font></font></h2>
                         </a>
-                        <span class="badge badge-warning main-tag"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Category</font></font></span>
+                        <a asp-controller="Home" asp-action="List" asp-route-categoryId="@Model.CategoryId">
+                            <span class="badge badge-warning main-tag">
+                                <font style="vertical-align: inherit;">@Model.Category</font>
+                            </span>
+                        </a>
                         <h6 class="title-uppercase">
                             <font style="vertical-align: inherit;">@Model.DateTime.ToString("D")</font>
                         </h6>
@@ -38,11 +46,16 @@
                     <div class="article-footer">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Метки:</font></font></h5>
-                                    <span class="label label-default"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Мотивационный </font></font></span>
-                                    <span class="label label-default"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">бюллетень </font></font></span>
-                                    <span class="badge badge-warning"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Тенденции</font></font></span>
+                                <div class="col-md-8">
+                                    <h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Localizer["Tags"]</font></font></h5>
+                                    @foreach (TagViewModel tag in Model.ListTag)
+                                    {
+                                        <a asp-controller="Home" asp-action="List" asp-route-tags="@tag.Title">
+                                            <span class="badge badge-warning">
+                                                <font style="vertical-align: inherit;">@tag.Title</font>
+                                            </span>
+                                        </a>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -171,6 +184,44 @@
             pMessage.textContent = chatMessage.message;
             mediaBody.append(pMessage);
 
+
+
+            let mediaFooter = document.createElement('div');
+            pullRight.classList.add("media-footer");
+
+            let aLike = document.createElement('a');
+            aLike.classList.add("btn");
+            aLike.classList.add("btn-link");
+
+            let iLike = document.createElement('i');
+            iLike.classList.add("fa");
+            iLike.classList.add("fa-thumbs-up");
+            iLike.classList.add("fa-2x");
+
+
+            aLike.append(iLike);
+
+
+            mediaFooter.append(aLike);
+
+
+            let aDisLike = document.createElement('a');
+            aDisLike.classList.add("btn");
+            aDisLike.classList.add("btn-link");
+
+            let iDisLike = document.createElement('i');
+            iDisLike.classList.add("fa");
+            iDisLike.classList.add("fa-thumbs-down");
+            iDisLike.classList.add("fa-2x");
+
+
+            aDisLike.append(iDisLike);
+
+
+            mediaFooter.append(aDisLike);
+
+
+            mediaBody.append(mediaFooter);                
 
             media.append(mediaBody);
 

@@ -17,5 +17,6 @@ namespace BlogIT.DB.Models
         public int CategoryId { get; set; }
         public bool Deleted { get; set; }
         public List<ChatMessage> ChatMessages { get; set; }
+        public List<NewsTag> NewsTag { get; set; }
     }
 }

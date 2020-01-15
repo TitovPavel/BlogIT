@@ -24,6 +24,7 @@ let VanillaCalendar = (function () {
             availableDates: [],
             date: new Date(),
             todaysDate: new Date(),
+            selectDate: null,
             button_prev: null,
             button_next: null,
             month: null,
@@ -77,6 +78,9 @@ let VanillaCalendar = (function () {
             }
             if (date.toString() === opts.todaysDate.toString()) {
                 newDayElem.classList.add('vanilla-calendar-date--today')
+            }
+            if (date.toString() === opts.selectDate.toString()) {
+                newDayElem.classList.add('vanilla-calendar-date--selected')
             }
             
             newDayElem.appendChild(dateElem)

@@ -17,5 +17,6 @@ namespace BlogIT.DB.BL
         IQueryable<ChatMessage> GetChatMessagesByPartyId(int partyId);
         IQueryable<News> GetLastNews(int count);
         IQueryable<News> GetTopNews(int count);
+        IQueryable<News> ListActualNews(bool includeChatMessage = false);
     }
 }

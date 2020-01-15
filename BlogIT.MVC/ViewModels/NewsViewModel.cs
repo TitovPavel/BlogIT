@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlogIT.MVC.ViewModels
@@ -19,5 +20,7 @@ namespace BlogIT.MVC.ViewModels
         public string NewsText { get; set; }
         [Display(Name = "Category")]
         public string Category { get; set; }
+        public int CategoryId { get; set; }
+        public List<TagViewModel> ListTag { get; set; }
     }
 }

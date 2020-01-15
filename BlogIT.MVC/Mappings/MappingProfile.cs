@@ -2,6 +2,7 @@
 using BlogIT.DB.Models;
 using BlogIT.MVC.ViewModels;
 using System;
+using System.Linq;
 
 namespace BlogIT.MVC.Mappings
 {
@@ -26,7 +27,12 @@ namespace BlogIT.MVC.Mappings
             CreateMap<News, ItemNewsListViewModel>();
             CreateMap<CreateNewsViewModel, News>();
             CreateMap<News, NewsViewModel>()
-                .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title));
+                .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title))
+                .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.Category.Id))
+                .ForMember(
+                    p => p.ListTag,
+                    opt => opt.MapFrom(x =>
+                        x.NewsTag.Select(y => new TagViewModel() { TagId = y.Tag.Id, Title = y.Tag.Title }).ToList()));
             CreateMap<User, ChangeRoleViewModel>()
                 .ForMember(d => d.UserId, o => o.MapFrom(s => s.Id));
             CreateMap<ChatMessage, ChatMessageViewModel>()
@@ -35,6 +41,7 @@ namespace BlogIT.MVC.Mappings
                 .ForMember(d => d.AvatarPath, o => o.MapFrom(s => s.User.Avatar != null ? $"/{s.User.Avatar.Path}" : "/Files/placeholder.jpg"));
             CreateMap<News, NewsAnnotationViewModel>()
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title))
+                .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.Category.Id))
                 .ForMember(d => d.CountsOfComments, o => o.MapFrom(s => s.ChatMessages.Count));
 
         }

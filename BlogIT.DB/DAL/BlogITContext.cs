@@ -16,7 +16,9 @@ namespace BlogIT.DB.DAL
         public DbSet<FileModel> Files { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<News> News { get; set; }
-	public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<NewsTag> NewsTags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +29,8 @@ namespace BlogIT.DB.DAL
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
             modelBuilder.ApplyConfiguration(new NewsConfiguration());
             modelBuilder.ApplyConfiguration(new ChatMessageConfiguration());
+            modelBuilder.ApplyConfiguration(new TagsConfiguration());
+            modelBuilder.ApplyConfiguration(new NewsTagsConfiguration());
 
             Initialization(modelBuilder);
         }
@@ -54,7 +58,7 @@ namespace BlogIT.DB.DAL
                 PasswordHash = "AQAAAAEAACcQAAAAEHuKKBDgB7OXg5nK+FMQpZGrnKhE+xrcAP3G6dMGSsh4Xt4zIfTa15arL/soZkLu2A=="
             };
 
-             modelBuilder.Entity<User>().HasData(user);
+            modelBuilder.Entity<User>().HasData(user);
 
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
             {
@@ -121,7 +125,7 @@ namespace BlogIT.DB.DAL
         }
     }
 
-	public class ChatMessageConfiguration : IEntityTypeConfiguration<ChatMessage>
+    public class ChatMessageConfiguration : IEntityTypeConfiguration<ChatMessage>
     {
         public void Configure(EntityTypeBuilder<ChatMessage> builder)
         {
@@ -135,6 +139,35 @@ namespace BlogIT.DB.DAL
                 .WithMany(t => t.ChatMessages)
                 .HasForeignKey(p => p.NewsId);
         }
-    }	
+    }
+
+    public class TagsConfiguration : IEntityTypeConfiguration<Tag>
+    {
+        public void Configure(EntityTypeBuilder<Tag> builder)
+        {
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.Title).IsRequired().HasMaxLength(256);
+        }
+    }
+
+    public class NewsTagsConfiguration : IEntityTypeConfiguration<NewsTag>
+    {
+        public void Configure(EntityTypeBuilder<NewsTag> builder)
+        {
+            builder.HasKey(bc => new
+                {
+                    bc.NewsId,
+                    bc.TagId
+                });
+
+            builder.HasOne(bc => bc.News)
+                .WithMany(b => b.NewsTag)
+                .HasForeignKey(bc => bc.NewsId);
+
+            builder.HasOne(bc => bc.Tag)
+                .WithMany(c => c.NewsTag)
+                .HasForeignKey(bc => bc.TagId);
+        }
+    }
 }
 
