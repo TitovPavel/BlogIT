@@ -14,7 +14,7 @@
     ViewBag.Title = @Localizer["Title"];
 }
 
-<div class="page-header-15 page-header page-header-xs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px); min-height: 15vh !important;">
+<div class="page-header page-header-xxs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px);">
     <div class="filter"></div>
 </div>
 
@@ -89,7 +89,7 @@
 
                     <div class="comments media-area media-area-small" id="chatList">
 
-                        <h3 class="text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Комментарии</font></font></h3>
+                        <h3 class="text-center">Комментарии</h3>
 
                     </div>
 
@@ -192,12 +192,15 @@
             let aLike = document.createElement('a');
             aLike.classList.add("btn");
             aLike.classList.add("btn-link");
+            aLike.id = "likeUp" + chatMessage.id
+
+            
 
             let iLike = document.createElement('i');
             iLike.classList.add("fa");
             iLike.classList.add("fa-thumbs-up");
             iLike.classList.add("fa-2x");
-
+            
 
             aLike.append(iLike);
 
@@ -208,6 +211,41 @@
             let aDisLike = document.createElement('a');
             aDisLike.classList.add("btn");
             aDisLike.classList.add("btn-link");
+            aDisLike.id = "likeDown" + chatMessage.id
+
+
+
+            aLike.addEventListener("click", function (event) {
+
+                if (aLike.classList.contains("btn-success")) {
+                    aLike.classList.remove("btn-success");
+                    connection.invoke("SendLikeUp", chatMessage.id, false);
+            
+                }
+                else {
+                    aLike.classList.add("btn-success");
+                    aDisLike.classList.remove("btn-danger");
+
+                    connection.invoke("SendLikeUp", chatMessage.id, true);
+            
+                 }
+
+            });
+
+
+            aDisLike.addEventListener("click", function (event) {
+
+                if (aDisLike.classList.contains("btn-danger")) {
+                    aDisLike.classList.remove("btn-danger");
+                }
+                else {
+                    aDisLike.classList.add("btn-danger");
+                    aLike.classList.remove("btn-success");
+                }
+
+            });
+
+
 
             let iDisLike = document.createElement('i');
             iDisLike.classList.add("fa");

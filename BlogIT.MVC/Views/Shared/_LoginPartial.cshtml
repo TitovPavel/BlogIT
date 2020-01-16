@@ -29,13 +29,23 @@
                     <a asp-controller="Account" asp-action="Profile" asp-route-id="@userId" class="dropdown-item">@Localizer["HiUser"] @UserManager.GetUserName(User)</a>
                     <a asp-controller="Account" asp-action="ProfileSettings" asp-route-id="@userId" class="dropdown-item">@Localizer["Settings"]</a>
                     <li class="divider"></li>
-                    @if (User.IsInRole("admin"))
-                    {
-                        <a asp-controller="Users" asp-action="Index" class="dropdown-item">@Localizer["Administration"]</a>
-                    }
                     <form asp-controller="Account" asp-action="LogOff" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" class="collapse navbar-collapse navbar-right">
                         <button class="dropdown-item" type="submit">@Localizer["Logout"]</button>
                     </form>
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li class="dropdown-item dropdown-submenu dropdown">
+
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @Localizer["Administration"]
+                            </a>
+                            <div class="dropdown-menu" x-placement="left-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-196px, 0px, 0px);">
+                                <a asp-controller="Users" asp-action="Index" class="dropdown-item">@Localizer["Users"]</a>
+                                <a asp-controller="News" asp-action="Index" class="dropdown-item">@Localizer["News"]</a>
+                            </div>
+
+                        </li>
+                    }
                 </ul>
             </li>
         </ul>

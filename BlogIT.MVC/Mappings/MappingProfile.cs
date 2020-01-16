@@ -38,7 +38,8 @@ namespace BlogIT.MVC.Mappings
             CreateMap<ChatMessage, ChatMessageViewModel>()
                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.UserName))
                 .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString()))
-                .ForMember(d => d.AvatarPath, o => o.MapFrom(s => s.User.Avatar != null ? $"/{s.User.Avatar.Path}" : "/Files/placeholder.jpg"));
+                .ForMember(d => d.AvatarPath, o => o.MapFrom(s => s.User.Avatar != null ? $"/{s.User.Avatar.Path}" : "/Files/placeholder.jpg"))
+                .ForMember(d => d.LikeCount, o => o.MapFrom(s => s.Like.FirstOrDefault(p => p.User == s.User && p.ChatMessageId == s.Id).LikeCount));
             CreateMap<News, NewsAnnotationViewModel>()
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title))
                 .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.Category.Id))

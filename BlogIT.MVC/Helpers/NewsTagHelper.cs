@@ -40,10 +40,10 @@ namespace BlogIT.MVC.Helpers
             tagDivCol.AddCssClass("col-md-8 ml-auto mr-auto");
 
             TagBuilder tagDivCard = new TagBuilder("div");
-            tagDivCard.AddCssClass("card card-blog card-plain text-center");
+            tagDivCard.AddCssClass("row card card-blog card-plain text-center");
 
             TagBuilder tagDivCardBody = new TagBuilder("div");
-            tagDivCardBody.AddCssClass("card-body");
+            tagDivCardBody.AddCssClass("card-body col-md-12 ml-auto mr-auto");
 
             TagBuilder tagTitle = new TagBuilder("a");
             tagTitle.Attributes["href"] = urlHelper.Action(ActionName, ControllerName, new  {id = NewsView.Id });
@@ -87,22 +87,24 @@ namespace BlogIT.MVC.Helpers
 
             tagDivCardCategory.InnerHtml.AppendHtml(tagDivDateTime);
 
-            if (NewsView.CountsOfComments > 0)
-            {
-
+          
                 TagBuilder tagDivCountComments = new TagBuilder("div");
                 tagDivCountComments.AddCssClass("pull-right");
+
+                TagBuilder tagAComments = new TagBuilder("a");
+                tagAComments.Attributes["href"] = urlHelper.Action(ActionName, ControllerName, new { id = NewsView.Id }, null, null, "chatList");
+
 
                 TagBuilder tagCountComments = new TagBuilder("h6");
                 tagCountComments.AddCssClass("text-muted");
                 tagCountComments.InnerHtml.Append(NewsView.CountsOfComments.ToString() + " comments");
 
+                tagAComments.InnerHtml.AppendHtml(tagCountComments);
 
-                tagDivCountComments.InnerHtml.AppendHtml(tagCountComments);
-
+                tagDivCountComments.InnerHtml.AppendHtml(tagAComments);
+            
                 tagDivCardCategory.InnerHtml.AppendHtml(tagDivCountComments);
 
-            }
 
 
             tagDivCardBody.InnerHtml.AppendHtml(tagDivCardCategory);

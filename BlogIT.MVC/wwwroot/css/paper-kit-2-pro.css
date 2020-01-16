@@ -8890,6 +8890,10 @@ textarea.form-control {
         min-height: 25vh !important;
     }
 
+    .page-header.page-header-xxs {
+        min-height: 12vh !important;
+    }
+
     .page-header .page-header-image {
         position: absolute;
         background-size: cover;

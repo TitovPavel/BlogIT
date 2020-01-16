@@ -12,16 +12,19 @@ namespace BlogIT.MVC.SignalR
 {
     public class ChatHub : Hub
     {
+        private readonly ILikeService _likeService;
         private readonly INewsService _newsService;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
-
-        public ChatHub(INewsService newsService,
+        
+        public ChatHub(ILikeService likeService,
+            INewsService newsService,
             IMapper mapper,
             UserManager<User> userManager,
             IPhotoService photoService)
         {
+            _likeService = likeService;
             _newsService = newsService;
             _photoService = photoService;
             _mapper = mapper;
@@ -48,6 +51,20 @@ namespace BlogIT.MVC.SignalR
 
             await Clients.Group(newsId.ToString()).SendAsync("ReceiveMessage", chatMessageViewModel);
         }
+
+        public async Task SendLikeUp(int chatMessageId, bool turnOn)
+        {
+            string userName = Context.User.Identity.Name;
+            User user = await _userManager.FindByNameAsync(userName);
+
+            if (user != null) 
+            { 
+                _likeService.SendLikeUp(user, chatMessageId, turnOn);
+            }
+
+        }
+
+
         public async Task ConnectUser(int newsId)
         {         
             await Groups.AddToGroupAsync(Context.ConnectionId, newsId.ToString());

@@ -12,5 +12,6 @@ namespace BlogIT.MVC.ViewModels
         public string Message { get; set; }
         public string UserName { get; set; }
         public string AvatarPath { get; set; }
+        public int LikeCount { get; set; }
     }
 }

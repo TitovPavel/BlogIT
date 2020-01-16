@@ -13,5 +13,6 @@ namespace BlogIT.DB.Models
         public string UserId { get; set; }
         public News News { get; set; }
         public int NewsId { get; set; }
+        public List<Like> Like { get; set; }
     }
 }

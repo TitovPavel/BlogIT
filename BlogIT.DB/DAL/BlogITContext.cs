@@ -19,6 +19,7 @@ namespace BlogIT.DB.DAL
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<NewsTag> NewsTags { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +32,7 @@ namespace BlogIT.DB.DAL
             modelBuilder.ApplyConfiguration(new ChatMessageConfiguration());
             modelBuilder.ApplyConfiguration(new TagsConfiguration());
             modelBuilder.ApplyConfiguration(new NewsTagsConfiguration());
+            modelBuilder.ApplyConfiguration(new LikeConfiguration());
 
             Initialization(modelBuilder);
         }
@@ -167,6 +169,22 @@ namespace BlogIT.DB.DAL
             builder.HasOne(bc => bc.Tag)
                 .WithMany(c => c.NewsTag)
                 .HasForeignKey(bc => bc.TagId);
+        }
+    }
+
+    public class LikeConfiguration : IEntityTypeConfiguration<Like>
+    {
+        public void Configure(EntityTypeBuilder<Like> builder)
+        {
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.LikeUp).IsRequired().HasDefaultValue(false);
+            builder.Property(p => p.LikeDown).IsRequired().HasDefaultValue(false);
+            builder.HasOne(p => p.User)
+               .WithMany(t => t.Like)
+               .HasForeignKey(p => p.UserId);
+            builder.HasOne(p => p.ChatMessage)
+                .WithMany(t => t.Like)
+                .HasForeignKey(p => p.ChatMessageId);
         }
     }
 }

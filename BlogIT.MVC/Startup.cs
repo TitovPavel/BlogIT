@@ -39,6 +39,7 @@ namespace BlogIT.MVC
                 .AddEntityFrameworkStores<BlogITContext>();
 
             services.AddTransient<INewsService, NewsService>();
+            services.AddTransient<ILikeService, LikeService>();
             services.AddTransient<IPhotoService, PhotoService>();
             
             services.AddAutoMapper(typeof(Mappings.MappingProfile));
