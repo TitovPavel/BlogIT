@@ -18,5 +18,6 @@ namespace BlogIT.DB.BL
         IQueryable<News> GetLastNews(int count);
         IQueryable<News> GetTopNews(int count);
         IQueryable<News> ListActualNews(bool includeChatMessage = false);
+        void UpdateNews(News news);
     }
 }

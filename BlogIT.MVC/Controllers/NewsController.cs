@@ -100,6 +100,35 @@ namespace BlogIT.MVC.Controllers
             return View(createNewsViewModel);
         }
 
+        public IActionResult Edit(int id)
+        {
+            News news = _newsService.GetNewsById(id);
+            if (news == null)
+            {
+                return NotFound();
+            }
+            EditNewsViewModel editNewsViewModel = _mapper.Map<EditNewsViewModel>(news);
+            editNewsViewModel.Categories = new SelectList(_newsService.GetCategories(), "Id", "Title");
+
+            return View(editNewsViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(EditNewsViewModel editNewsViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+
+                News news = _mapper.Map<News>(editNewsViewModel);
+                _newsService.UpdateNews(news);
+
+                return RedirectToAction("Index", new { id = news.Id });
+            }
+
+            editNewsViewModel.Categories = new SelectList(_newsService.GetCategories(), "Id", "Title");
+            return View(editNewsViewModel);
+        }
+
         [Route("[controller]/[action]/{id:int}")]
         public IActionResult Index(int id)
         {
