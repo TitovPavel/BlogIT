@@ -1,4 +1,4 @@
-﻿@model BlogIT.MVC.ViewModels.CreateNewsViewModel
+﻿@model BlogIT.MVC.ViewModels.EditNewsViewModel
 
 @{
     ViewBag.Title = @Localizer["Title"];
@@ -16,9 +16,11 @@
                         <h3>@Localizer["Title"]</h3>
                     </div>
                 </div>
-                <form asp-action="Create" id="CreateNewsForm">
+                <form asp-action="Edit" id="CreateNewsForm">
                     <div class="row">
                         <div class="col-md-10 ml-auto mr-auto">
+
+                            <input type="hidden" asp-for="Id" />
 
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">
@@ -78,7 +80,7 @@
                                     <button asp-action="Index" class="btn btn-outline-danger btn-block btn-round" formnovalidate name="cancel">Cancel</button>
                                 </div>
                                 <div class="col-md-6 col-sm-6">
-                                    <input type="submit" value="Create" class="btn btn-outline-primary btn-block btn-round" />
+                                    <input type="submit" value="Save" class="btn btn-outline-primary btn-block btn-round" />
                                 </div>
                             </div>
                         </div>

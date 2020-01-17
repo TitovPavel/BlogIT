@@ -26,6 +26,7 @@ namespace BlogIT.MVC.Mappings
                 .ForMember(d => d.UserId, o => o.MapFrom(s => s.Id));
             CreateMap<News, ItemNewsListViewModel>();
             CreateMap<CreateNewsViewModel, News>();
+            CreateMap<EditNewsViewModel, News>().ReverseMap();
             CreateMap<News, NewsViewModel>()
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title))
                 .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.Category.Id))

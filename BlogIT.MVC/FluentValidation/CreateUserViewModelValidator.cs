@@ -22,7 +22,7 @@ namespace BlogIT.MVC.FluentValidation
             RuleFor(x => x.Birthday)
                 .NotEmpty()
                 .WithMessage(localizer["BirthdayValidator"])
-                .LessThan(p => DateTime.Now)
+                .LessThan(p => DateTime.Now.AddYears(-16))
                 .WithMessage(localizer["BirthdayMore"]);
 
             RuleFor(x => x.Sex)

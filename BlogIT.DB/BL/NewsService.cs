@@ -20,28 +20,7 @@ namespace BlogIT.DB.BL
         public int AddNews(News news)
         {
 
-            string[] tags = news.Tags.Split(',');
-            news.NewsTag = new List<NewsTag>();
-
-            foreach (string tagTitle in tags)
-            {
-                Tag tag = _context.Tags.FirstOrDefault(p => p.Title == tagTitle);
-                if (tag == null)
-                {
-                    tag = new Tag()
-                    {
-                        Title = tagTitle
-                    };
-                }
-
-                news.NewsTag.Add(
-                    new NewsTag()
-                    {
-                        News = news,
-                        Tag = tag
-                    }
-                );
-            };
+            UpdateNewsTags(news);
 
             _context.News.Add(news);
             _context.SaveChanges();
@@ -113,6 +92,56 @@ namespace BlogIT.DB.BL
                 news = news.Include(i => i.ChatMessages);
             }
             return news;
+        }
+
+        public void UpdateNews(News news)
+        {
+            News updateNews = _context.News.Find(news.Id);
+
+            if (updateNews != null)
+            {
+                updateNews.Title = news.Title;
+                updateNews.DateTime = news.DateTime;
+                updateNews.Description = news.Description;
+                updateNews.NewsText = news.NewsText;
+                updateNews.CategoryId = news.CategoryId;
+
+                if(updateNews.Tags != news.Tags)
+                {
+                    updateNews.Tags = news.Tags;
+                    UpdateNewsTags(updateNews);
+                }
+
+                _context.News.Update(updateNews);
+            }
+            _context.SaveChanges();
+
+        }
+
+        private void UpdateNewsTags(News news)
+        {
+            string[] tags = news.Tags.Split(',');
+            news.NewsTag = new List<NewsTag>();
+
+            foreach (string tagTitle in tags)
+            {
+                Tag tag = _context.Tags.FirstOrDefault(p => p.Title.ToUpper() == tagTitle.ToUpper());
+                if (tag == null)
+                {
+                    tag = new Tag()
+                    {
+                        Title = tagTitle
+                    };
+                }
+
+                news.NewsTag.Add(
+                    new NewsTag()
+                    {
+                        News = news,
+                        Tag = tag
+                    }
+                );
+            };
         }
     }
 }
