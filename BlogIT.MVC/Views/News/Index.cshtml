@@ -193,17 +193,17 @@
             aLike.classList.add("btn");
             aLike.classList.add("btn-link");
             aLike.id = "likeUp" + chatMessage.id
-
-            
+           
 
             let iLike = document.createElement('i');
             iLike.classList.add("fa");
             iLike.classList.add("fa-thumbs-up");
-            iLike.classList.add("fa-2x");
             
 
             aLike.append(iLike);
+            aLike.append(chatMessage.likeUpCount);
 
+            
 
             mediaFooter.append(aLike);
 
@@ -213,22 +213,48 @@
             aDisLike.classList.add("btn-link");
             aDisLike.id = "likeDown" + chatMessage.id
 
+            let iDisLike = document.createElement('i');
+            iDisLike.classList.add("fa");
+            iDisLike.classList.add("fa-thumbs-down");
+            
 
+            aDisLike.append(iDisLike);
+            aDisLike.append(chatMessage.likeDownCount);
+
+            if (chatMessage.likeCount == 1) {
+
+                aLike.classList.add("btn-success");
+
+            } else if (chatMessage.likeCount == -1) {
+
+                aDisLike.classList.add("btn-danger");
+
+            }
+
+            
 
             aLike.addEventListener("click", function (event) {
 
                 if (aLike.classList.contains("btn-success")) {
+
                     aLike.classList.remove("btn-success");
-                    connection.invoke("SendLikeUp", chatMessage.id, false);
-            
+                    aLike.lastChild.textContent--;
+
+                    connection.invoke("SendLike", chatMessage.id, false, true);
+                    
                 }
                 else {
-                    aLike.classList.add("btn-success");
-                    aDisLike.classList.remove("btn-danger");
 
-                    connection.invoke("SendLikeUp", chatMessage.id, true);
-            
-                 }
+                    aLike.classList.add("btn-success");
+                    aLike.lastChild.textContent++;
+
+                    if (aDisLike.classList.contains("btn-danger")) {
+                        aDisLike.classList.remove("btn-danger");
+                        aDisLike.lastChild.textContent--;
+                    }
+
+                    connection.invoke("SendLike", chatMessage.id, true, true);
+                }
 
             });
 
@@ -236,25 +262,32 @@
             aDisLike.addEventListener("click", function (event) {
 
                 if (aDisLike.classList.contains("btn-danger")) {
+
                     aDisLike.classList.remove("btn-danger");
+                    aDisLike.lastChild.textContent--;
+
+                    connection.invoke("SendLike", chatMessage.id, false, false);
+                                
                 }
                 else {
+
                     aDisLike.classList.add("btn-danger");
-                    aLike.classList.remove("btn-success");
-                }
+                    aDisLike.lastChild.textContent++;
+
+                    if (aLike.classList.contains("btn-success")) {
+                        aLike.classList.remove("btn-success");
+                        aLike.lastChild.textContent--;
+                    }
+
+                    connection.invoke("SendLike", chatMessage.id, true, false);
+             
+            }
 
             });
 
 
 
-            let iDisLike = document.createElement('i');
-            iDisLike.classList.add("fa");
-            iDisLike.classList.add("fa-thumbs-down");
-            iDisLike.classList.add("fa-2x");
-
-
-            aDisLike.append(iDisLike);
-
+          
 
             mediaFooter.append(aDisLike);
 

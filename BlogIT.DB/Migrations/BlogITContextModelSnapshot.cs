@@ -125,6 +125,9 @@ namespace BlogIT.DB.Migrations
                     b.Property<int>("ChatMessageId")
                         .HasColumnType("int");
 
+                    b.Property<int>("LikeCount")
+                        .HasColumnType("int");
+
                     b.Property<bool>("LikeDown")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")

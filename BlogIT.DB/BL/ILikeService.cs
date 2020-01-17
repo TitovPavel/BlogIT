@@ -4,6 +4,7 @@ namespace BlogIT.DB.BL
 {
     public interface ILikeService
     {
-        void SendLikeUp(User user, int chatMessageId, bool turnOn);
+        void SendLike(User user, int chatMessageId, bool turnOn, bool up);
+        int GetLikeCount(User user, int chatMessageId);
     }
 }

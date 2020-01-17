@@ -85,7 +85,11 @@ namespace BlogIT.DB.BL
 
         public IQueryable<ChatMessage> GetChatMessagesByPartyId(int newsId)
         {
-            return _context.ChatMessages.Where(c => c.NewsId == newsId).Include(i => i.User).ThenInclude(i => i.Avatar);
+            return _context.ChatMessages
+                .Where(c => c.NewsId == newsId)
+                .Include(i => i.User)
+                .ThenInclude(i => i.Avatar)
+                .Include(i => i.Like);
         }
 
         public IQueryable<News> GetLastNews(int count)

@@ -14,7 +14,13 @@ namespace BlogIT.DB.BL
             _context = context;
         }
 
-        public void SendLikeUp(User user, int chatMessageId, bool turnOn)
+        public int GetLikeCount(User user, int chatMessageId)
+        {
+            Like like = _context.Likes.FirstOrDefault(p => p.User == user && p.ChatMessageId == chatMessageId);
+            return like == null ? 0 : like.LikeCount;
+        }
+
+        public void SendLike(User user, int chatMessageId, bool turnOn, bool up)
         {
             Like likeUp = _context.Likes.FirstOrDefault(p => p.User == user && p.ChatMessageId == chatMessageId);
             if (likeUp == null)
@@ -23,20 +29,20 @@ namespace BlogIT.DB.BL
                 {
                     User = user,
                     ChatMessageId = chatMessageId,
-                    LikeUp = turnOn ? true : false,
-                    LikeDown = false,
-                    LikeCount = turnOn ? 1 : 0
+                    LikeUp = turnOn && up ? true : false,
+                    LikeDown = turnOn && !up ? true : false,
+                    LikeCount = turnOn ? (up ? 1 : -1) : 0
                 };
                 _context.Likes.Add(likeUp);
                 _context.SaveChanges();
             }
             else
             {
-                if(turnOn != likeUp.LikeUp)
+                if(up && turnOn != likeUp.LikeUp || !up && turnOn != likeUp.LikeDown)
                 {
-                    likeUp.LikeUp = turnOn ? true : false;
-                    likeUp.LikeCount = turnOn ? 1 : 0;
-                    likeUp.LikeDown = false;
+                    likeUp.LikeUp = turnOn && up ? true : false;
+                    likeUp.LikeDown = turnOn && !up ? true : false;
+                    likeUp.LikeCount = turnOn ? (up ? 1 : -1) : 0;
                     _context.Likes.Update(likeUp);
                     _context.SaveChanges();
                 }

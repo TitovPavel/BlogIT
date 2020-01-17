@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BlogIT.DB.Models;
 using BlogIT.MVC.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
 
@@ -39,7 +40,8 @@ namespace BlogIT.MVC.Mappings
                 .ForMember(d => d.UserName, o => o.MapFrom(s => s.User.UserName))
                 .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString()))
                 .ForMember(d => d.AvatarPath, o => o.MapFrom(s => s.User.Avatar != null ? $"/{s.User.Avatar.Path}" : "/Files/placeholder.jpg"))
-                .ForMember(d => d.LikeCount, o => o.MapFrom(s => s.Like.FirstOrDefault(p => p.User == s.User && p.ChatMessageId == s.Id).LikeCount));
+                .ForMember(d => d.LikeUpCount, o => o.MapFrom(s => s.Like.Where(p => p.LikeUp == true && p.ChatMessageId == s.Id).Count()))
+                .ForMember(d => d.LikeDownCount, o => o.MapFrom(s => s.Like.Where(p => p.LikeDown == true && p.ChatMessageId == s.Id).Count()));
             CreateMap<News, NewsAnnotationViewModel>()
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title))
                 .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.Category.Id))
