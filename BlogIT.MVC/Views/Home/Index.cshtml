@@ -1,0 +1,57 @@
+﻿@model HomePageViewModel
+
+@{
+    ViewBag.Title = @Localizer["Title"];
+}
+
+    <div class="page-header page-header-xxs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px);">
+        <div class="filter"></div>
+    </div>
+
+    <div class="main">
+        <div class="section section-white">
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-md-6 ml-auto mr-auto text-center title">
+                        <h2><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Localizer["LastNews"]</font></font></h2>
+                    </div>
+                </div>
+
+                @foreach (NewsAnnotationViewModel lastNews in Model.LastNews)
+                {
+                    <news news-view="lastNews" controller-name="News" action-name="Index"></news>
+                    <hr>
+                }
+
+                <div class="text-right">
+                    <a asp-controller="Home" asp-action="List" class="btn btn-link btn-primary">@Localizer["AllNews"]</a>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 ml-auto mr-auto text-center title">
+                        <h2><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Localizer["TopNews"]</font></font></h2>
+                    </div>
+                </div>
+
+
+                @foreach (NewsAnnotationViewModel topNews in Model.TopNews)
+                {
+                    <news news-view="topNews" controller-name="News" action-name="Index"></news>
+                    <hr>
+
+                }
+
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+
+    <script>
+        $(window).ready(function () {
+            $('body').removeClass('full-screen');
+            $('body').addClass('blog-posts');
+        });
+    </script>
+}

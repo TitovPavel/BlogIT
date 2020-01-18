@@ -1,0 +1,79 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "bootstrap@4.4.1",
+      "destination": "wwwroot/lib/bootstrap/",
+      "files": [
+        "dist/css/bootstrap.css",
+        "dist/css/bootstrap.min.css",
+        "dist/js/bootstrap.js",
+        "dist/js/bootstrap.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery@3.4.1",
+      "destination": "wwwroot/lib/jquery/jquery/"
+    },
+    {
+      "library": "jquery-validation@1.19.1",
+      "destination": "wwwroot/lib/jquery-validation/",
+      "files": [
+        "dist/jquery.validate.js",
+        "dist/jquery.validate.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery-validation-unobtrusive@3.2.11",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive/"
+    },
+    {
+      "library": "paper-kit-2@2.1.0",
+      "destination": "wwwroot/lib/paper-kit-2/",
+      "files": [
+        "assets/js/bootstrap-switch.min.js",
+        "assets/js/bootstrap-datetimepicker.min.js",
+        "assets/js/popper.js",
+        "assets/js/nouislider.js",
+        "assets/js/moment.min.js"
+      ]
+    },
+    {
+      "library": "jquery-ajax-unobtrusive@3.2.6",
+      "destination": "wwwroot/lib/jquery-ajax-unobtrusive/",
+      "files": [
+        "dist/jquery.unobtrusive-ajax.min.js",
+        "dist/jquery.unobtrusive-ajax.js"
+      ]
+    },
+    {
+      "library": "jquery.hotkeys@0.1.0",
+      "destination": "wwwroot/lib/jquery.hotkeys/",
+      "files": [
+        "jquery.hotkeys.js"
+      ]
+    },
+    {
+      "library": "@microsoft/signalr@latest",
+      "destination": "wwwroot/lib/signalr/",
+      "files": [
+        "dist/browser/signalr.js",
+        "dist/browser/signalr.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jqueryui@1.12.1",
+      "destination": "wwwroot/lib/jqueryui/",
+      "files": [
+        "jquery-ui.min.js",
+        "jquery-ui.js",
+        "jquery-ui.css",
+        "jquery-ui.min.css"
+      ]
+    }
+  ]
+}

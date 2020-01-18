@@ -1,0 +1,355 @@
+﻿@model BlogIT.MVC.ViewModels.NewsViewModel
+@using Microsoft.AspNetCore.Identity
+@using BlogIT.DB.Models
+@using BlogIT.DB.BL
+@inject UserManager<User> UserManager
+@inject IPhotoService _photoService
+
+@{
+    string userId = UserManager.GetUserId(User);
+    string imgFilePath = await _photoService.GetPathAvatarByUserId(userId);
+}
+
+@{
+    ViewBag.Title = @Localizer["Title"];
+}
+
+<div class="page-header page-header-xxs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px);">
+    <div class="filter"></div>
+</div>
+
+<div class="main">
+    <div class="section section-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 ml-auto mr-auto">
+                    <div class="text-center">
+                        <a>
+                            <h2 class="title"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Model.Title</font></font></h2>
+                        </a>
+                        <a asp-controller="Home" asp-action="List" asp-route-categoryId="@Model.CategoryId">
+                            <span class="badge badge-warning main-tag">
+                                <font style="vertical-align: inherit;">@Model.Category</font>
+                            </span>
+                        </a>
+                        <h6 class="title-uppercase">
+                            <font style="vertical-align: inherit;">@Model.DateTime.ToString("D")</font>
+                        </h6>
+                    </div>
+                    <br>
+                </div>
+                <div class="col-md-8 ml-auto mr-auto">
+                    <div class="article-content">
+                        @Html.Raw(@Model?.NewsText)
+                    </div>
+                    <br>
+                    <div class="article-footer">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">@Localizer["Tags"]</font></font></h5>
+                                    @foreach (TagViewModel tag in Model.ListTag)
+                                    {
+                                        <a asp-controller="Home" asp-action="List" asp-route-tags="@tag.Title">
+                                            <span class="badge badge-warning">
+                                                <font style="vertical-align: inherit;">@tag.Title</font>
+                                            </span>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="section-gray">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-8 ml-auto mr-auto">
+                                    <h3 class="text-center"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Оставьте свой комментарий</font></font></h3>
+                                    <div class="media media-post">
+                                        <a class="pull-left author" href="#" width="30" height="30">
+                                            <div class="profile-photo-small">
+                                                <img src="~/@imgFilePath" class="img-circle img-responsive img-no-padding image-circle-dropdown">
+                                            </div>
+                                        </a>
+
+                                        <div class="media-body">
+                                            <input data-val="true" id="NewsId" name="NewsId" type="hidden" value=@Model.Id>
+                                            <textarea id="message" class="form-control border-input" placeholder="Write some nice stuff or nothing..." rows="4"></textarea>
+                                            <div class="media-footer">
+                                                <a href="" id="send" class="btn btn-info btn-wd pull-right"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Оставьте комментарий</font></font></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comments media-area media-area-small" id="chatList">
+
+                        <h3 class="text-center">Комментарии</h3>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $(window).ready(function () {
+            $('body').removeClass('full-screen');
+            $('body').addClass('blog-post');
+        });
+
+
+    </script>
+
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+
+    <script type="text/javascript">
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chat")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        let newsId = Number(document.getElementById("NewsId").value);
+
+
+        connection.on("ReceiveMessage", function (chatMessage) {
+            appendLine(chatMessage);
+        });
+
+        connection.start().then(function () {
+            connection.invoke("ConnectUser", newsId);
+        });
+
+        document.getElementById("send").addEventListener("click", function (event) {
+
+            let message = document.getElementById("message").value;
+            connection.invoke("SendMessage", message, newsId);
+            $('#message').val('');
+            event.preventDefault();
+
+        });
+
+        function appendLine(chatMessage) {
+
+            let media = document.createElement('div');
+            media.classList.add("media");
+
+            let aImage = document.createElement('a');
+            aImage.classList.add("pull-left");
+
+            let profilePhotoSmall = document.createElement('div');
+            profilePhotoSmall.classList.add("profile-photo-small");
+
+            let profileImg = document.createElement('img');
+            profileImg.classList.add("img-circle");
+            profileImg.classList.add("img-responsive");
+            profileImg.classList.add("img-no-padding");
+            profileImg.classList.add("image-circle-dropdown");
+            profileImg.src = chatMessage.avatarPath;
+
+            profilePhotoSmall.append(profileImg);
+
+            aImage.append(profilePhotoSmall);
+
+            media.append(aImage);
+
+            let mediaBody = document.createElement('div');
+            mediaBody.classList.add("media-body");
+
+            let mediaHeading = document.createElement('h5');
+            mediaHeading.classList.add("media-heading");
+            mediaHeading.textContent = chatMessage.userName;
+            mediaBody.append(mediaHeading);
+
+            let mediaHeadingLike = document.createElement('h5');
+
+            let likeCount = chatMessage.likeUpCount - chatMessage.likeDownCount;
+
+            if (likeCount > 0) {
+                mediaHeadingLike.textContent = "+" + likeCount;
+                mediaHeadingLike.classList.add("like-up");
+            }
+            else if (likeCount < 0) {
+                mediaHeadingLike.textContent = likeCount;
+                mediaHeadingLike.classList.add("like-down");
+            }
+
+            mediaHeadingLike.classList.add("media-heading");
+            mediaBody.append(mediaHeadingLike);
+
+
+            let pullRight = document.createElement('div');
+            pullRight.classList.add("pull-right");
+
+            let h6Date = document.createElement('h6');
+            h6Date.classList.add("text-muted");
+            h6Date.textContent = chatMessage.date;
+            pullRight.append(h6Date);
+
+            mediaBody.append(pullRight);
+
+            let pMessage = document.createElement('p');
+            pMessage.textContent = chatMessage.message;
+            mediaBody.append(pMessage);
+
+
+
+            let mediaFooter = document.createElement('div');
+            pullRight.classList.add("media-footer");
+
+            let aLike = document.createElement('a');
+            aLike.classList.add("btn");
+            aLike.classList.add("btn-link");
+            aLike.id = "likeUp" + chatMessage.id
+
+
+            let iLike = document.createElement('i');
+            iLike.classList.add("fa");
+            iLike.classList.add("fa-thumbs-up");
+
+
+            aLike.append(iLike);
+            aLike.append(chatMessage.likeUpCount);
+
+
+
+            mediaFooter.append(aLike);
+
+
+            let aDisLike = document.createElement('a');
+            aDisLike.classList.add("btn");
+            aDisLike.classList.add("btn-link");
+            aDisLike.id = "likeDown" + chatMessage.id
+
+            let iDisLike = document.createElement('i');
+            iDisLike.classList.add("fa");
+            iDisLike.classList.add("fa-thumbs-down");
+
+
+            aDisLike.append(iDisLike);
+            aDisLike.append(chatMessage.likeDownCount);
+
+            if (chatMessage.likeCount == 1) {
+
+                aLike.classList.add("btn-success");
+
+            } else if (chatMessage.likeCount == -1) {
+
+                aDisLike.classList.add("btn-danger");
+
+            }
+
+
+
+            aLike.addEventListener("click", function (event) {
+
+                if (aLike.classList.contains("btn-success")) {
+
+                    aLike.classList.remove("btn-success");
+                    aLike.lastChild.textContent--;
+
+                    connection.invoke("SendLike", chatMessage.id, false, true);
+
+                }
+                else {
+
+                    aLike.classList.add("btn-success");
+                    aLike.lastChild.textContent++;
+
+                    if (aDisLike.classList.contains("btn-danger")) {
+                        aDisLike.classList.remove("btn-danger");
+                        aDisLike.lastChild.textContent--;
+                    }
+
+                    connection.invoke("SendLike", chatMessage.id, true, true);
+                }
+
+
+                let likeCount = aLike.lastChild.textContent - aDisLike.lastChild.textContent;
+
+                mediaHeadingLike.classList.remove("like-up");
+                mediaHeadingLike.classList.remove("like-down");
+
+                if (likeCount > 0) {
+                    mediaHeadingLike.textContent = "+" + likeCount;
+                    mediaHeadingLike.classList.add("like-up");
+                }
+                else if (likeCount < 0) {
+                    mediaHeadingLike.textContent = likeCount;
+                    mediaHeadingLike.classList.add("like-down");
+                } else {
+                     mediaHeadingLike.textContent = "";                 
+                }
+
+
+            });
+
+
+            aDisLike.addEventListener("click", function (event) {
+
+                if (aDisLike.classList.contains("btn-danger")) {
+
+                    aDisLike.classList.remove("btn-danger");
+                    aDisLike.lastChild.textContent--;
+
+                    connection.invoke("SendLike", chatMessage.id, false, false);
+
+                }
+                else {
+
+                    aDisLike.classList.add("btn-danger");
+                    aDisLike.lastChild.textContent++;
+
+                    if (aLike.classList.contains("btn-success")) {
+                        aLike.classList.remove("btn-success");
+                        aLike.lastChild.textContent--;
+                    }
+
+                    connection.invoke("SendLike", chatMessage.id, true, false);
+
+                }
+
+                let likeCount = aLike.lastChild.textContent - aDisLike.lastChild.textContent;
+
+                mediaHeadingLike.classList.remove("like-up");
+                mediaHeadingLike.classList.remove("like-down");
+
+                if (likeCount > 0) {
+                    mediaHeadingLike.textContent = "+" + likeCount;
+                    mediaHeadingLike.classList.add("like-up");
+                }
+                else if (likeCount < 0) {
+                    mediaHeadingLike.textContent = likeCount;
+                    mediaHeadingLike.classList.add("like-down");
+                } else {
+                     mediaHeadingLike.textContent = "";                 
+                }
+
+
+            });
+
+
+
+
+
+            mediaFooter.append(aDisLike);
+
+
+            mediaBody.append(mediaFooter);
+
+            media.append(mediaBody);
+
+            document.getElementById('chatList').append(media);
+        };
+    </script>
+
+}

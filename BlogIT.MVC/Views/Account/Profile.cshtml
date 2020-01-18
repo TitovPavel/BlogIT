@@ -1,0 +1,44 @@
+﻿@model BlogIT.MVC.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = @Localizer["Title"];
+}
+
+
+<div class="profile-page">
+
+    <div class="page-header page-header-xs settings-background" style="background-image: url('@Url.Content("~/blog.jpg")');">
+        <div class="filter"></div>
+    </div>
+
+
+    <div class="profile-content section">
+        <div class="container">
+            <div class="row">
+                <div class="profile-picture">
+                    <div class="fileinput text-center fileinput-new" data-provides="fileinput">
+                        <div class="fileinput-new img-no-padding">
+                            <img src='@Url.Action("GetImage", "File", new { fileID = Model.AvatarID })'>
+                        </div>
+                        <div class="name">
+                            <h4 class="title text-center">
+                                <font style="vertical-align: inherit;">
+                                    <font style="vertical-align: inherit;">
+                                        @Model.UserName
+                                    </font>
+                                </font><br>
+                                <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Краткое Описание добавить пользователю</font></font></small>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 ml-auto mr-auto text-center">
+                    <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Описание добавить пользователю </font></font></p>
+                    <br>
+                    <a asp-controller="Party" asp-action="List" asp-route-id="@Model.Id">@Localizer["ListOfMyParties"]</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

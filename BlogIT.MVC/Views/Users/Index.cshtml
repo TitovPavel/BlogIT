@@ -1,0 +1,121 @@
+﻿@model UserListViewModel
+@{
+    ViewBag.Title = @Localizer["Title"];
+}
+
+    <div class="page-header page-header-xxs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px);">
+        <div class="filter"></div>
+    </div>
+
+    <div class="section landing-section">
+        <div class="row" style="height: 100%;">
+            <div class="col-md-6 ml-auto mr-auto">
+                <div class="text-center">
+                    <h2>@Localizer["Title"]</h2>
+                </div>
+
+                @if (Model.UserViewModel != null && Model.UserViewModel.Any())
+                {
+                    <form method="get">
+                        <div class="form-inline form-group">
+                            <input name="SearchString" id="SearchString" class="form-control form-control-sm" placeholder="@Localizer["Search"]" value="@Model.FilterUsersViewModel.SearchString"/>
+                            <button type="submit" class="btn btn-neutral  btn-just-icon btn-round"><i class="nc-icon nc-zoom-split"></i></button>
+                        </div>
+                    </form>
+
+                    <table class="table">
+                        <tr>
+                            <th>
+                                <a asp-action="Index" asp-route-searchString="@(Model.FilterUsersViewModel.SearchString)" asp-route-sortOrder="@(Model.SortUsersViewModel.EmailSort)">
+                                    <label asp-for="@Model.UserViewModel.First().Email"></label>
+                                    @if (Model.SortUsersViewModel.Current == SortStateUser.EmailAsc)
+                                    {
+                                        <i class="fa fa-chevron-up"></i>
+                                    }
+                                    else if (Model.SortUsersViewModel.Current == SortStateUser.EmailDesc)
+                                    {
+                                        <i class="fa fa-chevron-down"></i>
+                                    }
+                                </a>
+                            </th>
+                            <th>
+                                <a asp-action="Index" asp-route-searchString="@(Model.FilterUsersViewModel.SearchString)" asp-route-sortOrder="@(Model.SortUsersViewModel.NameSort)">
+                                    <label asp-for="@Model.UserViewModel.First().UserName"></label>
+                                    @if (Model.SortUsersViewModel.Current == SortStateUser.NameAsc)
+                                    {
+                                        <i class="fa fa-chevron-up"></i>
+                                    }
+                                    else if (Model.SortUsersViewModel.Current == SortStateUser.NameDesc)
+                                    {
+                                        <i class="fa fa-chevron-down"></i>
+                                    }
+                                </a>
+                            </th>
+                            <th>
+                                <a asp-action="Index" asp-route-searchString="@(Model.FilterUsersViewModel.SearchString)" asp-route-sortOrder="@(Model.SortUsersViewModel.BirthdaySort)">
+                                    <label asp-for="@Model.UserViewModel.First().Birthday"></label>
+                                    @if (Model.SortUsersViewModel.Current == SortStateUser.BirthdayAsc)
+                                    {
+                                        <i class="fa fa-chevron-up"></i>
+                                    }
+                                    else if (Model.SortUsersViewModel.Current == SortStateUser.BirthdayDesc)
+                                    {
+                                        <i class="fa fa-chevron-down"></i>
+                                    }
+                                </a>
+                            </th>
+                            <th>
+                                <a asp-action="Index" asp-route-searchString="@(Model.FilterUsersViewModel.SearchString)" asp-route-sortOrder="@(Model.SortUsersViewModel.SexSort)">
+                                    <label asp-for="@Model.UserViewModel.First().Sex"></label>
+                                    @if (Model.SortUsersViewModel.Current == SortStateUser.SexAsc)
+                                    {
+                                        <i class="fa fa-chevron-up"></i>
+                                    }
+                                    else if (Model.SortUsersViewModel.Current == SortStateUser.SexDesc)
+                                    {
+                                        <i class="fa fa-chevron-down"></i>
+                                    }
+                                </a>
+                            </th>
+                            <th></th>
+                        </tr>
+                        @foreach (var user in Model.UserViewModel)
+                        {
+                            <tr>
+                                <td>@user.Email</td>
+                                <td>@user.UserName</td>
+                                <td>@user.Birthday</td>
+                                <td>@user.Sex</td>
+                                <td>
+                                    @if (user.IsLocked)
+                                    {<form asp-action="UnLock" asp-route-id="@user.Id" method="post" style="display : inline-block ;">
+                                            <button type="submit" class="btn btn-secondary btn-link btn-just-icon" data-toggle="tooltip" data-placement="top" title=@Localizer["UnLock"]><i class="fa fa-unlock fa-2x"></i></button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-action="Lock" asp-route-id="@user.Id" method="post" style="display : inline-block ;">
+                                            <button type="submit" class="btn btn-primary btn-link btn-just-icon" data-toggle="tooltip" data-placement="top" title=@Localizer["Lock"]><i class="fa fa-lock fa-2x"></i></button>
+                                        </form>
+                                    }
+                                    <form asp-action="Delete" asp-route-id="@user.Id" method="post" style="display : inline-block ;">
+                                        <a class="btn btn-primary btn-link btn-just-icon" asp-action="Edit" asp-route-id="@user.Id" data-toggle="tooltip" data-placement="top" title=@Localizer["Edit"]><i class="fa fa-edit fa-2x"></i></a>
+                                        <a class="btn btn-primary btn-link btn-just-icon" asp-controller="Roles" asp-action="Edit" asp-route-userid="@user.Id" data-toggle="tooltip" data-placement="top" title=@Localizer["Roles"]><i class="nc-icon nc-badge"></i></a>
+                                        <button type="submit" class="btn btn-danger btn-link btn-just-icon" data-toggle="tooltip" data-placement="top" title=@Localizer["Delete"]>
+                                            <i class="fa fa-times fa-2x"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                }
+
+                <page-link page-url-searchString="@(Model.FilterUsersViewModel.SearchString)" page-model="Model.PageViewModel" page-action="Index"></page-link>
+
+                <div class="text-center">
+                    <a asp-action="Create" data-toggle="tooltip" data-placement="top" title=@Localizer["Create"]><i class="fa fa-user-plus fa-3x"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>

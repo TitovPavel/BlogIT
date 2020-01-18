@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogIT.MVC", "BlogITMVC\BlogIT.MVC.csproj", "{8DCB52E7-A591-4567-9571-3F19DBBCD2F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogIT.MVC", "BlogIT.MVC\BlogIT.MVC.csproj", "{8DCB52E7-A591-4567-9571-3F19DBBCD2F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogIT.DB", "BlogIT.DB\BlogIT.DB.csproj", "{7CD07C16-DA28-4096-98C6-6A1E91557825}"
 EndProject
