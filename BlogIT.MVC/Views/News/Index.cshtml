@@ -170,6 +170,23 @@
             mediaHeading.textContent = chatMessage.userName;
             mediaBody.append(mediaHeading);
 
+            let mediaHeadingLike = document.createElement('h5');
+
+            let likeCount = chatMessage.likeUpCount - chatMessage.likeDownCount;
+
+            if (likeCount > 0) {
+                mediaHeadingLike.textContent = "+" + likeCount;
+                mediaHeadingLike.classList.add("like-up");
+            }
+            else if (likeCount < 0) {
+                mediaHeadingLike.textContent = likeCount;
+                mediaHeadingLike.classList.add("like-down");
+            }
+
+            mediaHeadingLike.classList.add("media-heading");
+            mediaBody.append(mediaHeadingLike);
+
+
             let pullRight = document.createElement('div');
             pullRight.classList.add("pull-right");
 
@@ -193,17 +210,17 @@
             aLike.classList.add("btn");
             aLike.classList.add("btn-link");
             aLike.id = "likeUp" + chatMessage.id
-           
+
 
             let iLike = document.createElement('i');
             iLike.classList.add("fa");
             iLike.classList.add("fa-thumbs-up");
-            
+
 
             aLike.append(iLike);
             aLike.append(chatMessage.likeUpCount);
 
-            
+
 
             mediaFooter.append(aLike);
 
@@ -216,7 +233,7 @@
             let iDisLike = document.createElement('i');
             iDisLike.classList.add("fa");
             iDisLike.classList.add("fa-thumbs-down");
-            
+
 
             aDisLike.append(iDisLike);
             aDisLike.append(chatMessage.likeDownCount);
@@ -231,7 +248,7 @@
 
             }
 
-            
+
 
             aLike.addEventListener("click", function (event) {
 
@@ -241,7 +258,7 @@
                     aLike.lastChild.textContent--;
 
                     connection.invoke("SendLike", chatMessage.id, false, true);
-                    
+
                 }
                 else {
 
@@ -256,6 +273,24 @@
                     connection.invoke("SendLike", chatMessage.id, true, true);
                 }
 
+
+                let likeCount = aLike.lastChild.textContent - aDisLike.lastChild.textContent;
+
+                mediaHeadingLike.classList.remove("like-up");
+                mediaHeadingLike.classList.remove("like-down");
+
+                if (likeCount > 0) {
+                    mediaHeadingLike.textContent = "+" + likeCount;
+                    mediaHeadingLike.classList.add("like-up");
+                }
+                else if (likeCount < 0) {
+                    mediaHeadingLike.textContent = likeCount;
+                    mediaHeadingLike.classList.add("like-down");
+                } else {
+                     mediaHeadingLike.textContent = "";                 
+                }
+
+
             });
 
 
@@ -267,7 +302,7 @@
                     aDisLike.lastChild.textContent--;
 
                     connection.invoke("SendLike", chatMessage.id, false, false);
-                                
+
                 }
                 else {
 
@@ -280,19 +315,36 @@
                     }
 
                     connection.invoke("SendLike", chatMessage.id, true, false);
-             
-            }
+
+                }
+
+                let likeCount = aLike.lastChild.textContent - aDisLike.lastChild.textContent;
+
+                mediaHeadingLike.classList.remove("like-up");
+                mediaHeadingLike.classList.remove("like-down");
+
+                if (likeCount > 0) {
+                    mediaHeadingLike.textContent = "+" + likeCount;
+                    mediaHeadingLike.classList.add("like-up");
+                }
+                else if (likeCount < 0) {
+                    mediaHeadingLike.textContent = likeCount;
+                    mediaHeadingLike.classList.add("like-down");
+                } else {
+                     mediaHeadingLike.textContent = "";                 
+                }
+
 
             });
 
 
 
-          
+
 
             mediaFooter.append(aDisLike);
 
 
-            mediaBody.append(mediaFooter);                
+            mediaBody.append(mediaFooter);
 
             media.append(mediaBody);
 

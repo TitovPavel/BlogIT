@@ -36,7 +36,7 @@ namespace BlogIT.MVC.Controllers
             return View(homePageViewModel);
         }
 
-        public IActionResult List(string findString, string tags, DateTime dateCalendar, int categoryId = 0, bool findByComments = false, int page = 1)
+        public IActionResult List(string searchString, string tags, DateTime dateCalendar, int categoryId = 0, bool findByComments = false, int page = 1)
         {
 
             int pageSize = 3;
@@ -61,9 +61,9 @@ namespace BlogIT.MVC.Controllers
                     source = source.Where(p => p.NewsTag.Any(s => s.Tag.Title.ToUpper() == tagTitle.ToUpper()));
                 }
             }
-            if (!String.IsNullOrEmpty(findString))
+            if (!String.IsNullOrEmpty(searchString))
             {
-                source = source.Where(p => p.Title.Contains(findString)|| p.Description.Contains(findString) || p.NewsText.Contains(findString) || (findByComments && p.ChatMessages.Any(p => p.Message.Contains(findString))));
+                source = source.Where(p => p.Title.Contains(searchString) || p.Description.Contains(searchString) || p.NewsText.Contains(searchString) || (findByComments && p.ChatMessages.Any(p => p.Message.Contains(searchString))));
             }
 
             var count = source.Count();
@@ -73,7 +73,7 @@ namespace BlogIT.MVC.Controllers
 
             List<Category> listCategories = _newsService.GetCategories();
 
-            FilterNewsViewModel filterNewsViewModel = new FilterNewsViewModel(listCategories, findString, tags, dateCalendar, categoryId, findByComments);
+            FilterNewsViewModel filterNewsViewModel = new FilterNewsViewModel(listCategories, searchString, tags, dateCalendar, categoryId, findByComments);
 
 
             HomeNewsListViewModel homeNewsListViewModel = new HomeNewsListViewModel

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace MyPartyCore.Controllers
+namespace BlogIT.MVC.Controllers
 {
     public class FileController : Controller
     {

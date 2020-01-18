@@ -21,9 +21,9 @@
                                     <div class="form-group">
                                         <select id="CategoryId" name="CategoryId" asp-items="Model.FilterNewsViewModel.Categories" class="form-control" value="@Model.FilterNewsViewModel.CategoryId">
                                         </select>
-                                    </div>
+                                    </div>                                 
                                     <div class="form-group">
-                                        <input id="FindString" name="FindString" class="form-control" value="@Model.FilterNewsViewModel.FindString" placeholder="@Localizer["Find"]" />
+                                        <input id="SearchString" name="SearchString" class="form-control" value="@Model.FilterNewsViewModel.SearchString" placeholder="@Localizer["Search"]" />
                                     </div>
                                     <div class="form-group">
                                         <input id="Tags" name="Tags" class="tagsinput" data-color="success" type="text" data-role="tagsinput" style="display: none;" value="@Model.FilterNewsViewModel.Tags">
@@ -53,7 +53,7 @@
             </div>
 
             <page-link page-url-categoryId="@(Model.FilterNewsViewModel.CategoryId)"
-                       page-url-findString="@(Model.FilterNewsViewModel.FindString)"
+                       page-url-searchString="@(Model.FilterNewsViewModel.SearchString)"
                        page-url-tags="@(Model.FilterNewsViewModel.Tags)"
                        page-url-findByComments="@(Model.FilterNewsViewModel.FindByComments)"
                        page-url-dateCalendar="@(Model.FilterNewsViewModel.DateCalendar)"
@@ -71,7 +71,7 @@
             }
 
             <page-link page-url-categoryId="@(Model.FilterNewsViewModel.CategoryId)"
-                       page-url-findString="@(Model.FilterNewsViewModel.FindString)"
+                       page-url-searchString="@(Model.FilterNewsViewModel.SearchString)"
                        page-url-tags="@(Model.FilterNewsViewModel.Tags)"
                        page-url-findByComments="@(Model.FilterNewsViewModel.FindByComments)"
                        page-url-dateCalendar="@(Model.FilterNewsViewModel.DateCalendar)"
@@ -97,13 +97,21 @@
         let dateNow = new Date("@(DateTime.Now.Date.ToString("s") )")
 
         let myCalendar = new VanillaCalendar({
-            selector: "#myCalendar",     
+            selector: "#myCalendar",
             date: dateCalendar,
             selectDate: selectDate,
             todaysDate: dateNow,
             onSelect: (data, elem) => {
                 $('#DateCalendar').val(data.date);
             }
-        })
+        });
+
+        $(function () {
+        $("[data-autocomplete-source]").each(function () {
+            var target = $(this);
+            target.autocomplete({ source: target.attr("data-autocomplete-source") });
+        });
+        });
+
     </script>
 }

@@ -4,92 +4,92 @@
     ViewBag.Title = @Localizer["Title"];
 }
 
-    <div class="page-header page-header-xxs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px);">
-        <div class="filter"></div>
-    </div>
+<div class="page-header page-header-xxs settings-background" data-parallax="true" style="background-image: url('@Url.Content("~/blog.jpg")'); transform: translate3d(0px, 0px, 0px);">
+    <div class="filter"></div>
+</div>
 
-    <div class="main">
-        <div class="section">
-            <div class="container">
+<div class="main">
+    <div class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-10 ml-auto mr-auto">
+                    <h3>@Localizer["Title"]</h3>
+                </div>
+            </div>
+            <form asp-action="Edit" id="CreateNewsForm">
                 <div class="row">
                     <div class="col-md-10 ml-auto mr-auto">
-                        <h3>@Localizer["Title"]</h3>
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group date">
+                                    <label asp-for="DateTime" class="label-control"></label>
+                                    <input asp-for="DateTime" type="text" class="form-control datetimepicker" value=@DateTime.Now />
+                                    <span asp-validation-for="DateTime" class="text-danger"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="CategoryId" class="control-label"></label>
+                                    <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
+                                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label asp-for="Description" class="control-label"></label>
+                                    <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Tags" class="control-label"></label>
+                            <input asp-for="Tags" class="tagsinput" data-color="success" type="text" data-role="tagsinput" style="display: none;" id="tags">
+                            <span asp-validation-for="Tags" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label asp-for="NewsText" class="control-label"></label>
+
+                            <partial name="_WysiwygPanelPartial" />
+
+                            <div id="editor">
+                                @Html.Raw(@Model?.NewsText)
+                            </div>
+
+                            <input asp-for="NewsText" class="form-control" type="hidden" />
+                            <span asp-validation-for="NewsText" class="text-danger"></span>
+                        </div>
+
                     </div>
                 </div>
-                <form asp-action="Edit" id="CreateNewsForm">
-                    <div class="row">
-                        <div class="col-md-10 ml-auto mr-auto">
-
-                            <input type="hidden" asp-for="Id" />
-
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                            <div class="form-group">
-                                <label asp-for="Title" class="control-label"></label>
-                                <input asp-for="Title" class="form-control" />
-                                <span asp-validation-for="Title" class="text-danger"></span>
+                <div class="row">
+                    <div class="col-md-6 ml-auto mr-auto">
+                        <div class="row buttons-row">
+                            <div class="col-md-6 col-sm-6">
+                                <button asp-action="Index" class="btn btn-outline-danger btn-block btn-round" formnovalidate name="cancel">Cancel</button>
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group date">
-                                        <label asp-for="DateTime" class="label-control"></label>
-                                        <input asp-for="DateTime" type="text" class="form-control datetimepicker" value=@DateTime.Now />
-                                        <span asp-validation-for="DateTime" class="text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label asp-for="CategoryId" class="control-label"></label>
-                                        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
-                                        <span asp-validation-for="CategoryId" class="text-danger"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="form-group">
-                                        <label asp-for="Description" class="control-label"></label>
-                                        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
-                                        <span asp-validation-for="Description" class="text-danger"></span>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label asp-for="Tags" class="control-label"></label>
-                                <input asp-for="Tags" class="tagsinput" data-color="success" type="text" data-role="tagsinput" style="display: none;" id="tags">
-                                <span asp-validation-for="Tags" class="text-danger"></span>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label asp-for="NewsText" class="control-label"></label>
-
-                                <partial name="_WysiwygPanelPartial" />
-
-                                <div id="editor">
-                                    @Html.Raw(@Model?.NewsText)
-                                </div>
-
-                                <input asp-for="NewsText" class="form-control" type="hidden" />
-                                <span asp-validation-for="NewsText" class="text-danger"></span>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 ml-auto mr-auto">
-                            <div class="row buttons-row">
-                                <div class="col-md-6 col-sm-6">
-                                    <button asp-action="Index" class="btn btn-outline-danger btn-block btn-round" formnovalidate name="cancel">Cancel</button>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <input type="submit" value="Save" class="btn btn-outline-primary btn-block btn-round" />
-                                </div>
+                            <div class="col-md-6 col-sm-6">
+                                <input type="submit" value="Save" class="btn btn-outline-primary btn-block btn-round" />
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
+            </form>
 
-            </div>
         </div>
     </div>
+</div>
 
 
 
@@ -117,6 +117,13 @@
 
         $("#CreateNewsForm").submit(function () {
             $("#NewsText").val($("#editor").html());
+        });
+
+        $(function () {
+            $("[data-autocomplete-source]").each(function () {
+                var target = $(this);
+                target.autocomplete({ source: target.attr("data-autocomplete-source") });
+            });
         });
 
     </script>

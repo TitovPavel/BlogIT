@@ -151,3 +151,13 @@ img {
 .nav-up {
     top: -80px;
 }
+
+.media .like-up {
+    color: #6bd098;
+    padding-left: 10px;
+}
+
+.media .like-down {
+    color: #f5593d;
+    padding-left: 10px;
+}

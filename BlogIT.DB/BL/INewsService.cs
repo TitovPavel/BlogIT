@@ -16,6 +16,7 @@ namespace BlogIT.DB.BL
         void AddMessageChat(ChatMessage chatMessage);
         IQueryable<ChatMessage> GetChatMessagesByPartyId(int partyId);
         IQueryable<News> GetLastNews(int count);
+        IQueryable<Tag> GetTags(string tag);
         IQueryable<News> GetTopNews(int count);
         IQueryable<News> ListActualNews(bool includeChatMessage = false);
         void UpdateNews(News news);

@@ -50,11 +50,6 @@
       ]
     },
     {
-      "provider": "cdnjs",
-      "library": "jqueryui@1.12.1",
-      "destination": "wwwroot/lib/jqueryui/"
-    },
-    {
       "library": "jquery.hotkeys@0.1.0",
       "destination": "wwwroot/lib/jquery.hotkeys/",
       "files": [
@@ -67,6 +62,17 @@
       "files": [
         "dist/browser/signalr.js",
         "dist/browser/signalr.min.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jqueryui@1.12.1",
+      "destination": "wwwroot/lib/jqueryui/",
+      "files": [
+        "jquery-ui.min.js",
+        "jquery-ui.js",
+        "jquery-ui.css",
+        "jquery-ui.min.css"
       ]
     }
   ]

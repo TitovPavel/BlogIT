@@ -147,5 +147,10 @@ namespace BlogIT.DB.BL
                 );
             };
         }
+
+        public IQueryable<Tag> GetTags(string tag)
+        {
+            return _context.Tags.Where(p => p.Title.Contains(tag)).Take(10);
+        }
     }
 }

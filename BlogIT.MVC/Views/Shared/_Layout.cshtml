@@ -7,7 +7,6 @@
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
         <link rel="stylesheet" href="~/lib/jqueryui/jquery-ui.css" />
     </environment>
     <environment exclude="Development">
@@ -28,10 +27,13 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
 
     <link rel="stylesheet" href="~/lib/vanilla-calendar/src/css/vanilla-calendar.css">
-    
+    <link rel="stylesheet" href="~/lib/jqueryui/jquery-ui.css">
+
     <link href="~/css/paper-kit-2-pro.css" rel="stylesheet">
 
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/site.css" />
 
 
 </head>
@@ -43,10 +45,22 @@
             <div class="navbar-translate">
                 <a class="navbar-brand" href="/">@Localizer["NavbarBrand"]</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Переключить навигацию">
-                    <span class="navbar-toggler-bar bar1"></span>
-                    <span class="navbar-toggler-bar bar2"></span>
-                    <span class="navbar-toggler-bar bar3"></span>
                 </button>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">@Localizer["Category"]</a>
+                        <ul class="dropdown-menu dropdown-menu-right dropdown-info">
+                            <div class="dropdown-header">@Localizer["SelectCategory"]</div>
+                            <a asp-controller="Home" asp-action="List" asp-route-categoryId="1" class="dropdown-item">@Localizer["Java"]</a>
+                            <a asp-controller="Home" asp-action="List" asp-route-categoryId="2" class="dropdown-item">@Localizer["C#"]</a>
+                            <a asp-controller="Home" asp-action="List" asp-route-categoryId="3" class="dropdown-item">@Localizer["C++"]</a>
+                            <a asp-controller="Home" asp-action="List" asp-route-categoryId="4" class="dropdown-item">@Localizer["Algorithms"]</a>
+                            <a asp-controller="Home" asp-action="List" asp-route-categoryId="5" class="dropdown-item">@Localizer["Machine Learning"]</a>
+                        </ul>
+                    </li>
+                </ul>
             </div>
             <partial name="_LoginPartial" />
         </div>
@@ -137,6 +151,7 @@
     -->
 
     <script src="~/lib/vanilla-calendar/src/js/vanilla-calendar.js"></script>
+    <script src="~/lib/jqueryui/jquery-ui.js"></script>
 
     <script src="~/js/jasny-bootstrap.js"></script>
     <script src="~/js/paper-kit-2-pro.js"></script>

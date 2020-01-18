@@ -8,6 +8,8 @@ using BlogIT.MVC.ViewModels;
 using System;
 using System.Threading.Tasks;
 using BlogIT.DB.BL;
+using System.Linq;
+using AutoMapper.QueryableExtensions;
 
 namespace BlogIT.MVC.Controllers
 {
@@ -25,9 +27,58 @@ namespace BlogIT.MVC.Controllers
             _photoService = photoService;
         }
 
-        public IActionResult Index()
-        {           
-            return View(_mapper.ProjectTo<UserViewModel>(_userManager.Users));
+        public IActionResult Index(string searchString,
+            int page = 1,
+            SortStateUser sortOrder = SortStateUser.NameAsc,
+            int pageSize = 3)
+        {
+            IQueryable<User> source = _userManager.Users;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                source = source.Where(p => p.UserName.Contains(searchString) || p.Email.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case SortStateUser.NameDesc:
+                    source = source.OrderByDescending(s => s.UserName);
+                    break;
+                case SortStateUser.BirthdayAsc:
+                    source = source.OrderBy(s => s.Birthday);
+                    break;
+                case SortStateUser.BirthdayDesc:
+                    source = source.OrderByDescending(s => s.Birthday);
+                    break;
+                case SortStateUser.EmailAsc:
+                    source = source.OrderBy(s => s.Email);
+                    break;
+                case SortStateUser.EmailDesc:
+                    source = source.OrderByDescending(s => s.Email);
+                    break;
+                case SortStateUser.SexAsc:
+                    source = source.OrderBy(s => s.Sex);
+                    break;
+                case SortStateUser.SexDesc:
+                    source = source.OrderByDescending(s => s.Sex);
+                    break;
+                default:
+                    source = source.OrderBy(s => s.UserName);
+                    break;
+            }
+
+            var count = source.Count();
+            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ProjectTo<UserViewModel>(_mapper.ConfigurationProvider).ToList();
+
+            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+
+            UserListViewModel userListViewModel = new UserListViewModel();
+            userListViewModel.UserViewModel = items;
+            userListViewModel.PageViewModel = pageViewModel;
+            userListViewModel.SortUsersViewModel = new SortUsersViewModel(sortOrder);
+            userListViewModel.FilterUsersViewModel = new FilterUsersViewModel(searchString);
+
+            return View(userListViewModel);
         }
 
         public IActionResult Create()

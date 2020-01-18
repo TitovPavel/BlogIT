@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -30,13 +31,18 @@ namespace BlogIT.MVC.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(int page = 1,
+        public IActionResult Index(string searchString, int page = 1,
             SortState sortOrder = SortState.DateTimeDesc)
         {
 
             int pageSize = 3;
 
             IQueryable<News> source = _newsService.ListAll();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                source = source.Where(p => p.Title.Contains(searchString) || p.Tags.Contains(searchString) || p.Description.Contains(searchString) || p.NewsText.Contains(searchString) || p.ChatMessages.Any(p => p.Message.Contains(searchString)));
+            }
 
             // сортировка
             switch (sortOrder)
@@ -70,6 +76,7 @@ namespace BlogIT.MVC.Controllers
             newsListViewModel.ItemNewsListViewModel = items;
             newsListViewModel.PageViewModel = pageViewModel;
             newsListViewModel.SortNewsViewModel = new SortNewsViewModel(sortOrder);
+            newsListViewModel.FilterNewsViewModel = new FilterNewsViewModel(searchString);
                 
 
             return View("List", newsListViewModel);

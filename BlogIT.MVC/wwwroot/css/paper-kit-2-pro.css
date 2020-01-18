@@ -894,6 +894,8 @@ select.selectpicker {
     width: 100%;
     line-height: 22px;
     cursor: text;
+    height: auto;
+    min-height: 40px;
 }
 
     .bootstrap-tagsinput input {
@@ -7570,6 +7572,8 @@ textarea.form-control {
     width: 100%;
     line-height: 22px;
     cursor: text;
+    height: auto;
+    min-height: 40px;
 }
 
     .bootstrap-tagsinput input {
