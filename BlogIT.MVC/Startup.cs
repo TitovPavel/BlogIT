@@ -36,12 +36,14 @@ namespace BlogIT.MVC
                 options.UseSqlServer(Configuration.GetConnectionString("BlogITDatabase")));
 
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<BlogITContext>();
+                .AddEntityFrameworkStores<BlogITContext>()
+                .AddDefaultTokenProviders();
 
             services.AddTransient<INewsService, NewsService>();
             services.AddTransient<ILikeService, LikeService>();
             services.AddTransient<IPhotoService, PhotoService>();
-            
+            services.AddTransient<IEmailService, EmailService>();
+
             services.AddAutoMapper(typeof(Mappings.MappingProfile));
 
             services.AddAuthorization();

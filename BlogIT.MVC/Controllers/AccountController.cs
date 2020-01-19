@@ -20,18 +20,21 @@ namespace BlogIT.MVC.Controllers
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<AccountController> _localizer;
         private readonly IPhotoService _photoService;
+        private readonly IEmailService _emailService;
 
         public AccountController(UserManager<User> userManager, 
             SignInManager<User> signInManager, 
             IMapper mapper, 
             IStringLocalizer<AccountController> localizer,
-            IPhotoService photoService)
+            IPhotoService photoService,
+            IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
             _localizer = localizer;
             _photoService = photoService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -58,8 +61,18 @@ namespace BlogIT.MVC.Controllers
                     var gender = new Claim(ClaimTypes.Gender, registerViewModel.Sex.ToString(), typeof(String).ToString());
                     await _userManager.AddClaimAsync(user, gender);
 
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new { userId = user.Id, code = code },
+                        protocol: HttpContext.Request.Scheme);
+  
+                    await _emailService.SendEmailAsync(user.Email, "Confirm your account",
+                        $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+
+                    return RedirectToAction("Confirm", "Account");
+
                 }
                 else
                 {
@@ -70,6 +83,32 @@ namespace BlogIT.MVC.Controllers
                 }
             }
             return View(registerViewModel);
+        }
+
+        [HttpGet]
+        public IActionResult Confirm()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return View("Error");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Home");
+            else
+                return View("Error");
         }
 
         [HttpGet]
@@ -84,6 +123,17 @@ namespace BlogIT.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                var user = await _userManager.FindByNameAsync(model.Name);
+                if (user != null)
+                {
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email");
+                        return View(model);
+                    }
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
 
                 if (result.Succeeded)

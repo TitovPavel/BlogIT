@@ -4,30 +4,48 @@
 // Write your JavaScript code.
 
 
-const $dropdown = $(".dropdown");
-const $dropdownToggle = $(".dropdown-toggle");
-const $dropdownMenu = $(".dropdown-menu");
+//const $dropdown = $(".dropdown");
+//const $dropdownToggle = $(".dropdown-toggle");
+//const $dropdownMenu = $(".dropdown-menu");
+
+const $dropdown = $("#dropdown-user");
+const $dropdownToggle = $("#dropdown-toggle-user");
+const $dropdownMenu = $("#dropdown-menu-user");
+
+const $dropdownAdmin = $("#dropdown-admin");
+const $dropdownToggleAdmin = $("#dropdown-toggle-admin");
+const $dropdownMenuAdmin = $("#dropdown-menu-admin");
+
 const showClass = "show";
 
-$(window).on("load resize", function () {
+const funcDropdown = function (dropdown, dropdownToggle, dropdownMenu) {
     if (this.matchMedia("(min-width: 768px)").matches) {
-        $dropdown.hover(
+        dropdown.hover(
             function () {
                 const $this = $(this);
                 $this.addClass(showClass);
-                $this.find($dropdownToggle).attr("aria-expanded", "true");
-                $this.find($dropdownMenu).addClass(showClass);
+                $this.find(dropdownToggle).attr("aria-expanded", "true");
+                $this.find(dropdownMenu).addClass(showClass);
             },
             function () {
                 const $this = $(this);
                 $this.removeClass(showClass);
-                $this.find($dropdownToggle).attr("aria-expanded", "false");
-                $this.find($dropdownMenu).removeClass(showClass);
+                $this.find(dropdownToggle).attr("aria-expanded", "false");
+                $this.find(dropdownMenu).removeClass(showClass);
             }
         );
     } else {
-        $dropdown.off("mouseenter mouseleave");
+        dropdown.off("mouseenter mouseleave");
     }
+};
+
+
+
+
+
+$(window).on("load resize", function () {
+    funcDropdown($dropdown, $dropdownToggle, $dropdownMenu);
+    funcDropdown($dropdownAdmin, $dropdownToggleAdmin, $dropdownMenuAdmin);
 });
 
 
