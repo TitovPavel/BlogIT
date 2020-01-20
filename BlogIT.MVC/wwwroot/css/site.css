@@ -161,3 +161,7 @@ img {
     color: #f5593d;
     padding-left: 10px;
 }
+
+.rating {
+    height: 25px;
+}

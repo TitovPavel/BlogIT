@@ -47,6 +47,8 @@ namespace BlogIT.MVC.Mappings
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title))
                 .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.Category.Id))
                 .ForMember(d => d.CountsOfComments, o => o.MapFrom(s => s.ChatMessages.Count));
+            CreateMap<RatingViewModel, Rating>();
+
 
         }
     }

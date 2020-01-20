@@ -18,5 +18,9 @@ namespace BlogIT.DB.Models
         public bool Deleted { get; set; }
         public List<ChatMessage> ChatMessages { get; set; }
         public List<NewsTag> NewsTag { get; set; }
+        public List<Rating> Ratings { get; set; }
+        public int RateCount { get; set; }
+        public int RateAverage { get; set; }
+
     }
 }

@@ -22,5 +22,8 @@ namespace BlogIT.MVC.ViewModels
         public string Category { get; set; }
         public int CategoryId { get; set; }
         public List<TagViewModel> ListTag { get; set; }
+        public int RateCount { get; set; }
+        public int RateAverage { get; set; }
+
     }
 }

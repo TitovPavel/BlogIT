@@ -57,6 +57,19 @@
                                         </a>
                                     }
                                 </div>
+                                <div class="col-md-4 align-self-center">
+                                    <img src="~/Files/EmptyStar.png" alt="Star Rating" align="middle" id="rating1" class="rating" NewsId="@Model.Id" />
+                                    <img src="~/Files/EmptyStar.png" alt="Star Rating" align="middle" id="rating2" class="rating" NewsId="@Model.Id" />
+                                    <img src="~/Files/EmptyStar.png" alt="Star Rating" align="middle" id="rating3" class="rating" NewsId="@Model.Id" />
+                                    <img src="~/Files/EmptyStar.png" alt="Star Rating" align="middle" id="rating4" class="rating" NewsId="@Model.Id" />
+                                    <img src="~/Files/EmptyStar.png" alt="Star Rating" align="middle" id="rating5" class="rating" NewsId="@Model.Id" />
+                                    (@Model.RateCount)
+                                     <span class="avr" id="RateAverage">@Model.RateAverage</span>
+     
+                                    <br />
+                                    <div id="result-rate"></div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -287,7 +300,7 @@
                     mediaHeadingLike.textContent = likeCount;
                     mediaHeadingLike.classList.add("like-down");
                 } else {
-                     mediaHeadingLike.textContent = "";                 
+                    mediaHeadingLike.textContent = "";
                 }
 
 
@@ -331,7 +344,7 @@
                     mediaHeadingLike.textContent = likeCount;
                     mediaHeadingLike.classList.add("like-down");
                 } else {
-                     mediaHeadingLike.textContent = "";                 
+                    mediaHeadingLike.textContent = "";
                 }
 
 
@@ -350,6 +363,81 @@
 
             document.getElementById('chatList').append(media);
         };
+
+
+
+        //star rating
+        $(function () {
+
+            refilRating();
+
+            $("img.rating").mouseover(function () {
+
+                giveRating($(this), "FilledStar.png");
+
+                $(this).css("cursor", "pointer");
+
+            });
+
+            $("img.rating").mouseout(function () {
+
+                giveRating($(this), "EmptyStar.png");
+
+                refilRating();
+
+            });
+
+
+
+            $("img.rating").click(function (e) {
+
+                // $("img.rating").unbind("mouseout mouseover click");
+
+                $(this).css('color', 'red');
+
+                // alert(e.currentTarget + ' was clicked!');
+
+                var url = "/News/PostRating?Rate=" + parseInt($(this).attr("id").slice(6)) + "&NewsId=" + parseInt($(this).attr("NewsId"));
+
+                $.ajax({
+                    url: url,
+                    contentType: "application/json",
+                    method: "POST",
+                    data: {},
+                    success: function (data) {
+                       $("#result-rate").text(data);
+   },
+                    fail: function (data) {
+                        console.log(data);
+                    }
+                })
+
+            });
+
+        });
+
+
+
+        function giveRating(img, image) {
+
+            img.attr("src", "/Files/" + image)
+
+                .prevAll("img.rating").attr("src", "/Files/" + image);
+                img.nextAll("img.rating").attr("src", "/Files/" + "EmptyStar.png");
+
+        }
+
+        function refilRating() {
+
+          var av = $("#RateAverage").text();
+            
+           if (av != "" || av != null)
+           {
+               var img = $("#rating" + av);
+               img.attr("src", "/Files/FilledStar.png").prevAll("img.rating").attr("src", "/Files/FilledStar.png");
+           }
+        }
+
     </script>
 
 }

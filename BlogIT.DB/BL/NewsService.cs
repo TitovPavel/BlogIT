@@ -110,7 +110,7 @@ namespace BlogIT.DB.BL
                 updateNews.NewsText = news.NewsText;
                 updateNews.CategoryId = news.CategoryId;
 
-                if(updateNews.Tags != news.Tags)
+                if (updateNews.Tags != news.Tags)
                 {
                     updateNews.Tags = news.Tags;
                     UpdateNewsTags(updateNews);
@@ -151,6 +151,40 @@ namespace BlogIT.DB.BL
         public IQueryable<Tag> GetTags(string tag)
         {
             return _context.Tags.Where(p => p.Title.Contains(tag)).Take(10);
+        }
+
+        public void SetRating(Rating rating)
+        {
+            Rating updateRating = _context.Ratings.FirstOrDefault(p => p.NewsId == rating.NewsId && p.UserId == rating.UserId);
+
+            if (updateRating != null)
+            {
+                updateRating.Rate = rating.Rate;
+                _context.Ratings.Update(updateRating);
+            }
+            else
+            {
+                _context.Ratings.Add(rating);
+            }
+            _context.SaveChanges();
+
+            UpdateNewsRating(rating.NewsId);
+
+        }
+
+        private void UpdateNewsRating(int newsId)
+        {
+
+            News news = _context.News.Include(p => p.Ratings).SingleOrDefault(p => p.Id == newsId);
+
+            if (news != null)
+            {
+                news.RateCount = news.Ratings.Count;
+                news.RateAverage = news.RateCount == 0 ? 0 : news.Ratings.Sum(m => m.Rate)/ news.RateCount;
+                _context.News.Update(news);
+                _context.SaveChanges();
+
+            }
         }
     }
 }

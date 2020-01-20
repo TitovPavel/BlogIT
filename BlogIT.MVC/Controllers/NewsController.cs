@@ -155,5 +155,19 @@ namespace BlogIT.MVC.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public JsonResult PostRating(RatingViewModel ratingViewModel)
+        {
+
+            Rating rating = _mapper.Map<Rating>(ratingViewModel);
+            rating.UserId = _userManager.GetUserId(User);
+
+            _newsService.SetRating(rating);
+
+            return Json("You rated this " + ratingViewModel.Rate.ToString() + " star(s)");
+
+        }
+
     }
 }

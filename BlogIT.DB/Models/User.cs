@@ -10,6 +10,7 @@ namespace BlogIT.DB.Models
         public string Sex { get; set; }
         public List<News> News { get; set; }
         public List<Like> Like { get; set; }
+        public List<Rating> Ratings { get; set; }        
         public FileModel Avatar { get; set; }
         public int? AvatarId { get; set; }
     }
