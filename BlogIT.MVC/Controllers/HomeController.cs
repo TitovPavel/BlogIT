@@ -5,6 +5,7 @@ using BlogIT.DB.Models;
 using BlogIT.MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,21 +17,26 @@ namespace BlogIT.MVC.Controllers
 
         private readonly IMapper _mapper;
         private readonly INewsService _newsService;
+        private readonly IConfiguration _configuration;
 
         public HomeController(IMapper mapper,
-            INewsService newsService)
+            INewsService newsService,
+            IConfiguration configuration)
         {
             _mapper = mapper;
             _newsService = newsService;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
         {
+            Int32.TryParse(_configuration["CountLastNews"], out int countLastNews);
+            Int32.TryParse(_configuration["CountTopNews"], out int countTopNews);
 
             HomePageViewModel homePageViewModel = new HomePageViewModel()
             {
-                LastNews = _newsService.GetLastNews(3).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList(),
-                TopNews = _newsService.GetTopNews(3).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList()
+                LastNews = _newsService.GetLastNews(countLastNews).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList(),
+                TopNews = _newsService.GetTopNews(countTopNews).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList()
             };
 
             return View(homePageViewModel);

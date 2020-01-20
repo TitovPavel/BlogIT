@@ -44,6 +44,8 @@ namespace BlogIT.MVC
             services.AddTransient<IPhotoService, PhotoService>();
             services.AddTransient<IEmailService, EmailService>();
 
+            services.AddSingleton(Configuration);
+
             services.AddAutoMapper(typeof(Mappings.MappingProfile));
 
             services.AddAuthorization();

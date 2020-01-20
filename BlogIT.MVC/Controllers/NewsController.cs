@@ -141,9 +141,10 @@ namespace BlogIT.MVC.Controllers
         {
 
             News news = _newsService.GetNewsById(id);
-            NewsViewModel itemNewsListViewModel = _mapper.Map<NewsViewModel>(news);
-          
-            return View(itemNewsListViewModel);
+            NewsViewModel newsViewModel = _mapper.Map<NewsViewModel>(news);
+            newsViewModel.CurrentUserRating = _newsService.GetCurrentUserRating(news.Id, _userManager.GetUserId(User));
+
+            return View(newsViewModel);
 
         }
 
@@ -160,14 +161,21 @@ namespace BlogIT.MVC.Controllers
         public JsonResult PostRating(RatingViewModel ratingViewModel)
         {
 
-            Rating rating = _mapper.Map<Rating>(ratingViewModel);
-            rating.UserId = _userManager.GetUserId(User);
+            string userId = _userManager.GetUserId(User);
 
-            _newsService.SetRating(rating);
+            if(userId!=null)
+            {
+                Rating rating = _mapper.Map<Rating>(ratingViewModel);
+                rating.UserId = userId;
 
-            return Json("You rated this " + ratingViewModel.Rate.ToString() + " star(s)");
+                _newsService.SetRating(rating);
 
+                return Json("You rated this " + ratingViewModel.Rate.ToString() + " star(s)");
+            }
+            else
+            {
+                return Json("Need to register");
+            }
         }
-
     }
 }

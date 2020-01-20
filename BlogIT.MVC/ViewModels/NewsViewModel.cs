@@ -24,6 +24,7 @@ namespace BlogIT.MVC.ViewModels
         public List<TagViewModel> ListTag { get; set; }
         public int RateCount { get; set; }
         public int RateAverage { get; set; }
+        public int CurrentUserRating { get; set; }
 
     }
 }

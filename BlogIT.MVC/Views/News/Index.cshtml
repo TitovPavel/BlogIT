@@ -8,6 +8,7 @@
 @{
     string userId = UserManager.GetUserId(User);
     string imgFilePath = await _photoService.GetPathAvatarByUserId(userId);
+    string CurrentUserRating = "";
 }
 
 @{
@@ -63,11 +64,18 @@
                                     <img src="~/Files/EmptyStar.png" alt="Star Rating" align="middle" id="rating3" class="rating" NewsId="@Model.Id" />
                                     <img src="~/Files/EmptyStar.png" alt="Star Rating" align="middle" id="rating4" class="rating" NewsId="@Model.Id" />
                                     <img src="~/Files/EmptyStar.png" alt="Star Rating" align="middle" id="rating5" class="rating" NewsId="@Model.Id" />
-                                    (@Model.RateCount)
-                                     <span class="avr" id="RateAverage">@Model.RateAverage</span>
-     
+                                    <span id="RateCount">(@Model.RateCount)</span>
+                                    <span class="avr" id="RateAverage">@Model.RateAverage </span>
+
                                     <br />
-                                    <div id="result-rate"></div>
+                                    <div id="result-rate">
+                                        @if (Model.CurrentUserRating > 0)
+                                        {
+                                            CurrentUserRating = "You rated this " + @Model.CurrentUserRating + " star(s)";
+                                        }
+  
+                                        @CurrentUserRating
+                                    </div>
 
                                 </div>
                             </div>

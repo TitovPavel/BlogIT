@@ -165,3 +165,7 @@ img {
 .rating {
     height: 25px;
 }
+
+.card  .small-rating {
+    height: 15px;
+}

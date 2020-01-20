@@ -84,6 +84,9 @@ namespace BlogIT.DB.BL
         public IQueryable<News> GetTopNews(int count)
         {
             return _context.News
+                .OrderByDescending(p => p.RateAverage)
+                .ThenByDescending(p => p.RateCount)
+                .ThenByDescending(p => p.DateTime)
                 .Take(count)
                 .Include(i => i.Category);
         }
@@ -185,6 +188,21 @@ namespace BlogIT.DB.BL
                 _context.SaveChanges();
 
             }
+        }
+
+        public int GetCurrentUserRating(int newsId, string userId)
+        {
+            if(!String.IsNullOrEmpty(userId))
+            {
+                Rating rating = _context.Ratings.FirstOrDefault(p => p.NewsId == newsId && p.UserId == userId);
+
+                if (rating != null)
+                {
+                    return rating.Rate;
+                }
+            }
+
+            return 0;
         }
     }
 }
