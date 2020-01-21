@@ -12220,7 +12220,8 @@ a.pswp__share--download:hover {
     }
 
         .full-screen.register-page .demo-card .division .line,
-        .full-screen.register-page .card-register .division .line {
+        .full-screen.register-page .card-register .division .line,
+        .full-screen.login-page .card-register .division .line {
             border-top: 1px solid rgba(0, 0, 0, 0.2);
             position: absolute;
             top: 10px;
@@ -12228,12 +12229,14 @@ a.pswp__share--download:hover {
         }
 
             .full-screen.register-page .demo-card .division .line.l,
-            .full-screen.register-page .card-register .division .line.l {
+            .full-screen.register-page .card-register .division .line.l,
+            .full-screen.login-page .card-register .division .line.l {
                 left: 0;
             }
 
             .full-screen.register-page .demo-card .division .line.r,
-            .full-screen.register-page .card-register .division .line.r {
+            .full-screen.register-page .card-register .division .line.r,
+            .full-screen.login-page .card-register .division .line.r {
                 right: 0;
             }
 

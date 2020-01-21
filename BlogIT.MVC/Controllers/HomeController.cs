@@ -36,7 +36,8 @@ namespace BlogIT.MVC.Controllers
             HomePageViewModel homePageViewModel = new HomePageViewModel()
             {
                 LastNews = _newsService.GetLastNews(countLastNews).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList(),
-                TopNews = _newsService.GetTopNews(countTopNews).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList()
+                TopNews = _newsService.GetTopNews(countTopNews).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList(),
+                ListTags = _newsService.GetTopTags()
             };
 
             return View(homePageViewModel);

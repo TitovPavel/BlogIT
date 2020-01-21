@@ -204,5 +204,10 @@ namespace BlogIT.DB.BL
 
             return 0;
         }
+
+        public List<string> GetTopTags()
+        {
+            return _context.Tags.OrderByDescending(p => p.NewsTag.Count).Take(10).Select(p => p.Title).ToList();
+        }
     }
 }

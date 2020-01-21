@@ -37,7 +37,7 @@ namespace BlogIT.MVC.Helpers
             tagDivRow.AddCssClass("row");
 
             TagBuilder tagDivCol = new TagBuilder("div");
-            tagDivCol.AddCssClass("col-md-8 ml-auto mr-auto");
+            tagDivCol.AddCssClass("col-md-10 ml-auto mr-auto");
 
             TagBuilder tagDivCard = new TagBuilder("div");
             tagDivCard.AddCssClass("row card card-blog card-plain text-center");
