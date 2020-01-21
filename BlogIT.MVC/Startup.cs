@@ -54,6 +54,11 @@ namespace BlogIT.MVC
                 .AddCookie(options => 
                 {
                     options.LoginPath = new PathString("/Account/Login");
+                })
+                .AddFacebook(facebookOptions =>
+                {
+                    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                 });
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");

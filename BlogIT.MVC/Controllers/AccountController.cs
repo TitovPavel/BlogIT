@@ -10,6 +10,8 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BlogIT.DB.BL;
+using System.Linq;
+using Microsoft.AspNetCore.Authentication;
 
 namespace BlogIT.MVC.Controllers
 {
@@ -148,6 +150,45 @@ namespace BlogIT.MVC.Controllers
                 }
             }
             return View(model);
+        }
+
+
+        public IActionResult LoginWhithOAuth(string provider)
+        {
+            var authenticationProperties = _signInManager.ConfigureExternalAuthenticationProperties(provider, Url.Action(nameof(HandleExternalLogin)));
+            return Challenge(authenticationProperties, provider);
+        }
+
+        public async Task<IActionResult> HandleExternalLogin()
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true);
+
+            if (!result.Succeeded) 
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var newUser = new User
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true,
+                    Sex = "0"
+                };
+                var createResult = await _userManager.CreateAsync(newUser);
+                if (!createResult.Succeeded)
+                    throw new Exception(createResult.Errors.Select(e => e.Description).Aggregate((errors, error) => $"{errors}, {error}"));
+
+                await _userManager.AddToRoleAsync(newUser, "user");
+
+                await _userManager.AddLoginAsync(newUser, info);
+                var newUserClaims = info.Principal.Claims.Append(new Claim("userId", newUser.Id));
+                await _userManager.AddClaimsAsync(newUser, newUserClaims);
+                await _signInManager.SignInAsync(newUser, isPersistent: false);
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]

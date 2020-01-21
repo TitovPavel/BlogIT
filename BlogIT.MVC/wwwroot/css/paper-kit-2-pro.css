@@ -12207,7 +12207,8 @@ a.pswp__share--download:hover {
     }
 
     .full-screen.register-page .demo-card .division,
-    .full-screen.register-page .card-register .division {
+    .full-screen.register-page .card-register .division,
+    .full-screen.login-page .card-register .division {
         float: none;
         margin: 0 auto;
         overflow: hidden;
@@ -12251,7 +12252,8 @@ a.pswp__share--download:hover {
             color: #51bcda;
         }
 
-.full-screen.register-page .social {
+.full-screen.register-page .social,
+.full-screen.login-page .social {
     margin-bottom: 10px;
     margin-top: 15px;
     text-align: center;
