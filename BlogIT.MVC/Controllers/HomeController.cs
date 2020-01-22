@@ -48,8 +48,8 @@ namespace BlogIT.MVC.Controllers
 
         public async Task<IActionResult> List(string searchString, string tags, DateTime dateCalendar, int categoryId = 0, bool findByComments = false, int page = 1)
         {
-
-            int pageSize = 3;
+            
+            Int32.TryParse(_configuration["NumberOfItemsPerPage"], out int pageSize);
 
             List<string> tagsList = new List<string>();
 

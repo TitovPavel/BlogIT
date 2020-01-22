@@ -108,10 +108,13 @@
                         </div>
                     </div>
 
-                    <div class="comments media-area media-area-small" id="chatList">
+                    <div class="comments media-area media-area-small">
 
                         <h3 class="text-center">Комментарии</h3>
 
+                        <div id="chatList">
+
+                        </div>
                     </div>
 
                 </div>
@@ -369,7 +372,7 @@
 
             media.append(mediaBody);
 
-            document.getElementById('chatList').append(media);
+            document.getElementById('chatList').prepend(media);
         };
 
 

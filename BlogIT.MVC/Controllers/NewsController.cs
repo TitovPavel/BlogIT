@@ -16,7 +16,7 @@ using static BlogIT.DB.Specifications.NewsFilterPaginatedSpecification;
 
 namespace BlogIT.MVC.Controllers
 {
-    //[Authorize(Roles = "admin")]
+    
     [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
     public class NewsController : Controller
     {
@@ -34,6 +34,7 @@ namespace BlogIT.MVC.Controllers
             _userManager = userManager;
         }
 
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Index(string searchString, int page = 1,
             SortState sortOrder = SortState.DateTimeDesc)
         {
@@ -67,6 +68,7 @@ namespace BlogIT.MVC.Controllers
 
         }
 
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             CreateNewsViewModel createNewsViewModel = new CreateNewsViewModel();
@@ -74,6 +76,7 @@ namespace BlogIT.MVC.Controllers
             return View(createNewsViewModel);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public IActionResult Create(CreateNewsViewModel createNewsViewModel)
         {
@@ -91,6 +94,7 @@ namespace BlogIT.MVC.Controllers
             return View(createNewsViewModel);
         }
 
+        [Authorize(Roles = "admin")]
         public IActionResult Edit(int id)
         {
             News news = _newsService.GetNewsById(id);
@@ -104,6 +108,7 @@ namespace BlogIT.MVC.Controllers
             return View(editNewsViewModel);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public IActionResult Edit(EditNewsViewModel editNewsViewModel)
         {
@@ -132,6 +137,7 @@ namespace BlogIT.MVC.Controllers
 
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -141,6 +147,7 @@ namespace BlogIT.MVC.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "user, admin")]
         [HttpPost]
         public JsonResult PostRating(RatingViewModel ratingViewModel)
         {
