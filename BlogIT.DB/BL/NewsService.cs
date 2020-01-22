@@ -103,7 +103,7 @@ namespace BlogIT.DB.BL
 
         public void UpdateNews(News news)
         {
-            News updateNews = _context.News.Find(news.Id);
+            News updateNews = _context.News.Include(p => p.NewsTag).FirstOrDefault(p => p.Id == news.Id);
 
             if (updateNews != null)
             {
@@ -207,7 +207,7 @@ namespace BlogIT.DB.BL
 
         public List<string> GetTopTags()
         {
-            return _context.Tags.OrderByDescending(p => p.NewsTag.Count).Take(10).Select(p => p.Title).ToList();
+            return _context.Tags.Where(p => p.NewsTag.Count > 0).OrderByDescending(p => p.NewsTag.Count).Take(10).Select(p => p.Title).ToList();
         }
     }
 }
