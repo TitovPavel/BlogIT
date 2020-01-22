@@ -1,10 +1,13 @@
 ﻿using BlogIT.DB.DAL;
+using BlogIT.DB.Interfaces;
 using BlogIT.DB.Models;
+using BlogIT.DB.Specifications;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BlogIT.DB.BL
 {
@@ -62,33 +65,36 @@ namespace BlogIT.DB.BL
             _context.SaveChanges();
         }
 
-        public IQueryable<ChatMessage> GetChatMessagesByPartyId(int newsId)
+        public List<ChatMessage> GetChatMessagesByPartyId(int newsId)
         {
             return _context.ChatMessages
                 .Where(c => c.NewsId == newsId)
                 .Include(i => i.User)
                 .ThenInclude(i => i.Avatar)
-                .Include(i => i.Like);
+                .Include(i => i.Like)
+                .ToList();
         }
 
-        public IQueryable<News> GetLastNews(int count)
+        public List<News> GetLastNews(int count)
         {
             return _context.News
                 .Where(x => x.DateTime <= DateTime.Now && !x.Deleted)
                 .OrderByDescending(s => s.DateTime)
                 .Take(count)
                 .Include(i => i.Category)
-                .Include(i => i.ChatMessages);
+                .Include(i => i.ChatMessages)
+                .ToList();
         }
 
-        public IQueryable<News> GetTopNews(int count)
+        public List<News> GetTopNews(int count)
         {
             return _context.News
                 .OrderByDescending(p => p.RateAverage)
                 .ThenByDescending(p => p.RateCount)
                 .ThenByDescending(p => p.DateTime)
                 .Take(count)
-                .Include(i => i.Category);
+                .Include(i => i.Category)
+                .ToList();
         }
 
         public IQueryable<News> ListActualNews(bool includeChatMessage = false)
@@ -151,9 +157,12 @@ namespace BlogIT.DB.BL
             };
         }
 
-        public IQueryable<Tag> GetTags(string tag)
+        public List<Tag> GetTags(string tag)
         {
-            return _context.Tags.Where(p => p.Title.Contains(tag)).Take(10);
+            return _context.Tags
+                .Where(p => p.Title.Contains(tag))
+                .Take(10)
+                .ToList();
         }
 
         public void SetRating(Rating rating)
@@ -208,6 +217,21 @@ namespace BlogIT.DB.BL
         public List<string> GetTopTags()
         {
             return _context.Tags.Where(p => p.NewsTag.Count > 0).OrderByDescending(p => p.NewsTag.Count).Take(10).Select(p => p.Title).ToList();
+        }
+
+        public async Task<IReadOnlyList<News>> ListNewsAsync(ISpecification<News> spec)
+        {
+            return await ApplySpecification(spec).ToListAsync();
+        }
+
+        public async Task<int> CountNewsAsync(ISpecification<News> spec)
+        {
+            return await ApplySpecification(spec).CountAsync();
+        }
+
+        private IQueryable<News> ApplySpecification(ISpecification<News> spec)
+        {
+            return SpecificationEvaluator<News>.GetQuery(_context.News.AsQueryable(), spec);
         }
     }
 }

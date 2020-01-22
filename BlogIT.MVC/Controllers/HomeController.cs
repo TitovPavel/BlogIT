@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using AutoMapper.Collection;
 using BlogIT.DB.BL;
 using BlogIT.DB.Models;
 using BlogIT.MVC.ViewModels;
@@ -9,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BlogIT.DB.Specifications;
+using System.Threading.Tasks;
 
 namespace BlogIT.MVC.Controllers
 {
@@ -35,48 +38,39 @@ namespace BlogIT.MVC.Controllers
 
             HomePageViewModel homePageViewModel = new HomePageViewModel()
             {
-                LastNews = _newsService.GetLastNews(countLastNews).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList(),
-                TopNews = _newsService.GetTopNews(countTopNews).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList(),
+                LastNews = _mapper.Map<List<News>, List<NewsAnnotationViewModel>>(_newsService.GetLastNews(countLastNews)),
+                TopNews = _mapper.Map<List<News>, List<NewsAnnotationViewModel>>(_newsService.GetTopNews(countTopNews)),
                 ListTags = _newsService.GetTopTags()
             };
 
             return View(homePageViewModel);
         }
 
-        public IActionResult List(string searchString, string tags, DateTime dateCalendar, int categoryId = 0, bool findByComments = false, int page = 1)
+        public async Task<IActionResult> List(string searchString, string tags, DateTime dateCalendar, int categoryId = 0, bool findByComments = false, int page = 1)
         {
 
             int pageSize = 3;
 
-            IQueryable<News> source = _newsService.ListActualNews(findByComments);
+            List<string> tagsList = new List<string>();
 
-
-            if(dateCalendar> DateTime.MinValue)
-            {
-                source = source.Where(p => p.DateTime.Date == dateCalendar.Date);
-            }
-            if (categoryId != 0)
-            {
-                source = source.Where(p => p.CategoryId == categoryId);
-            }
             if (!String.IsNullOrEmpty(tags))
             {
-                string[] tagsArray = tags.Split(',');
+                tagsList = tags.ToUpper().Split(',').ToList();
 
-                foreach (string tagTitle in tagsArray)
-                {
-                    source = source.Where(p => p.NewsTag.Any(s => s.Tag.Title.ToUpper() == tagTitle.ToUpper()));
-                }
-            }
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                source = source.Where(p => p.Title.Contains(searchString) || p.Description.Contains(searchString) || p.NewsText.Contains(searchString) || (findByComments && p.ChatMessages.Any(p => p.Message.Contains(searchString))));
             }
 
-            var count = source.Count();
-            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ProjectTo<NewsAnnotationViewModel>(_mapper.ConfigurationProvider).ToList();
+            var filterSpecification = new NewsFilterSpecification(searchString, tagsList, dateCalendar, categoryId, findByComments);
+            var filterPaginatedSpecification =
+                new NewsFilterPaginatedSpecification((page - 1) * pageSize, pageSize, searchString, tagsList, dateCalendar, categoryId, findByComments);
 
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+            var itemsOnPage = await _newsService.ListNewsAsync(filterPaginatedSpecification);
+            var totalItems = await _newsService.CountNewsAsync(filterSpecification);
+
+            var items = _mapper.Map<IReadOnlyList<News>, List<NewsAnnotationViewModel>>(itemsOnPage);
+
+
+
+            PageViewModel pageViewModel = new PageViewModel(totalItems, page, pageSize);
 
             List<Category> listCategories = _newsService.GetCategories();
 
