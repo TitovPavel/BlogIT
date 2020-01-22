@@ -8,7 +8,6 @@ namespace BlogIT.DB.BL
 {
     public interface INewsService
     {
-        IQueryable<News> ListAll();
         List<Category> GetCategories();
         int AddNews(News news);
         News GetNewsById(int id);
@@ -18,7 +17,6 @@ namespace BlogIT.DB.BL
         List<News> GetLastNews(int count);
         List<Tag> GetTags(string tag);
         List<News> GetTopNews(int count);
-        IQueryable<News> ListActualNews(bool includeChatMessage = false);
         void UpdateNews(News news);
         void SetRating(Rating rating);
         int GetCurrentUserRating(int newsId, string userId);

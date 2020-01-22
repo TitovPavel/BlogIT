@@ -54,10 +54,6 @@ namespace BlogIT.DB.BL
                 .SingleOrDefault(p => p.Id == id);
         }
 
-        public IQueryable<News> ListAll()
-        {
-            return _context.News.Where(x => !x.Deleted);
-        }
 
         public void AddMessageChat(ChatMessage chatMessage)
         {
@@ -95,16 +91,6 @@ namespace BlogIT.DB.BL
                 .Take(count)
                 .Include(i => i.Category)
                 .ToList();
-        }
-
-        public IQueryable<News> ListActualNews(bool includeChatMessage = false)
-        {
-            IQueryable<News> news = ListAll().Where(p => p.DateTime <= DateTime.Now);
-            if (includeChatMessage)
-            {
-                news = news.Include(i => i.ChatMessages);
-            }
-            return news;
         }
 
         public void UpdateNews(News news)

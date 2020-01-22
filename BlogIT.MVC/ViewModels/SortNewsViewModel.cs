@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BlogIT.DB.Specifications;
+
 
 namespace BlogIT.MVC.ViewModels
 {
@@ -19,15 +17,5 @@ namespace BlogIT.MVC.ViewModels
             WriterSort = sortOrder == SortState.WriterAsc ? SortState.WriterDesc : SortState.WriterAsc;
             Current = sortOrder;
         }
-    }
-
-    public enum SortState
-    {
-        TitleAsc,   
-        TitleDesc,
-        DateTimeAsc,
-        DateTimeDesc,    
-        WriterAsc, 
-        WriterDesc 
     }
 }

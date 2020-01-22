@@ -8,14 +8,51 @@ namespace BlogIT.DB.Specifications
     public class NewsFilterPaginatedSpecification : BaseSpecification<News>
     {
         public NewsFilterPaginatedSpecification(int skip, int take, string searchString, List<String> tags, DateTime dateCalendar, int categoryId = 0, bool findByComments = false)
-            : base(p => (dateCalendar == DateTime.MinValue || p.DateTime.Date == dateCalendar.Date) &&
+            : base(p => (!p.Deleted) && (dateCalendar == DateTime.MinValue || p.DateTime.Date == dateCalendar.Date) &&
                 (categoryId == 0 || p.CategoryId == categoryId) &&
-                (tags.Count == 0 || p.NewsTag.Any(s => tags.Contains(s.Tag.Title.ToUpper()))) &&
+                (tags == null || tags.Count == 0 || p.NewsTag.Any(s => tags.Contains(s.Tag.Title.ToUpper()))) &&
                 (String.IsNullOrEmpty(searchString) || p.Title.Contains(searchString) || p.Description.Contains(searchString) || p.NewsText.Contains(searchString) || (findByComments && p.ChatMessages.Any(p => p.Message.Contains(searchString))))
            )
         {
             AddInclude(p => p.ChatMessages);
+            AddInclude(p => p.Category);
             ApplyPaging(skip, take);
         }
+
+        public void ApplyOrder(SortState sortOrder)
+        {
+            switch (sortOrder)
+            {
+                case SortState.TitleDesc:
+                    ApplyOrderByDescending(s => s.Title);
+                    break;
+                case SortState.DateTimeAsc:
+                    ApplyOrderBy(s => s.DateTime);
+                    break;
+                case SortState.DateTimeDesc:
+                    ApplyOrderByDescending(s => s.DateTime);
+                    break;
+                case SortState.WriterAsc:
+                    ApplyOrderBy(s => s.Writer.UserName);
+                    break;
+                case SortState.WriterDesc:
+                    ApplyOrderByDescending(s => s.Writer.UserName);
+                    break;
+                default:
+                    ApplyOrderBy(s => s.Title);
+                    break;
+            }
+        }
+   
+    }
+
+    public enum SortState
+    {
+        TitleAsc,
+        TitleDesc,
+        DateTimeAsc,
+        DateTimeDesc,
+        WriterAsc,
+        WriterDesc
     }
 }

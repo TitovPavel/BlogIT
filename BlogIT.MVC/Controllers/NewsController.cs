@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BlogIT.DB.BL;
 using BlogIT.DB.Models;
+using BlogIT.DB.Specifications;
 using BlogIT.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using static BlogIT.DB.Specifications.NewsFilterPaginatedSpecification;
 
 namespace BlogIT.MVC.Controllers
 {
@@ -31,46 +34,27 @@ namespace BlogIT.MVC.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(string searchString, int page = 1,
+        public async Task<IActionResult> Index(string searchString, int page = 1,
             SortState sortOrder = SortState.DateTimeDesc)
         {
 
             int pageSize = 3;
+       
+          
+            var filterSpecification = new NewsFilterSpecification(searchString, null, DateTime.MinValue, 0, false);
 
-            IQueryable<News> source = _newsService.ListAll();
+            var filterPaginatedSpecification =
+                new NewsFilterPaginatedSpecification((page - 1) * pageSize, pageSize, searchString, null, DateTime.MinValue, 0, false);
+            filterPaginatedSpecification.ApplyOrder(sortOrder);
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                source = source.Where(p => p.Title.Contains(searchString) || p.Tags.Contains(searchString) || p.Description.Contains(searchString) || p.NewsText.Contains(searchString) || p.ChatMessages.Any(p => p.Message.Contains(searchString)));
-            }
+            var itemsOnPage = await _newsService.ListNewsAsync(filterPaginatedSpecification);
+            var totalItems = await _newsService.CountNewsAsync(filterSpecification);
 
-            // сортировка
-            switch (sortOrder)
-            {
-                case SortState.TitleDesc:
-                    source = source.OrderByDescending(s => s.Title);
-                    break;
-                case SortState.DateTimeAsc:
-                    source = source.OrderBy(s => s.DateTime);
-                    break;
-                case SortState.DateTimeDesc:
-                    source = source.OrderByDescending(s => s.DateTime);
-                    break;
-                case SortState.WriterAsc:
-                    source = source.OrderBy(s => s.Writer.UserName);
-                    break;
-                case SortState.WriterDesc:
-                    source = source.OrderByDescending(s => s.Writer.UserName);
-                    break;
-                default:
-                    source = source.OrderBy(s => s.Title);
-                    break;
-            }
+            var items = _mapper.Map<IReadOnlyList<News>, List<ItemNewsListViewModel>>(itemsOnPage);
 
-            var count = source.Count();
-            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ProjectTo<ItemNewsListViewModel>(_mapper.ConfigurationProvider).ToList();
 
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+
+            PageViewModel pageViewModel = new PageViewModel(totalItems, page, pageSize);
 
             NewsListViewModel newsListViewModel = new NewsListViewModel();
             newsListViewModel.ItemNewsListViewModel = items;
