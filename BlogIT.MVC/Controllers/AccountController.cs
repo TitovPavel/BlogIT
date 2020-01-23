@@ -51,7 +51,7 @@ namespace BlogIT.MVC.Controllers
             if (ModelState.IsValid)
             {
                 User user = _mapper.Map<User>(registerViewModel);
-
+                
                 var result = await _userManager.CreateAsync(user, registerViewModel.Password);
                 if (result.Succeeded)
                 {
@@ -173,6 +173,7 @@ namespace BlogIT.MVC.Controllers
                     UserName = email,
                     Email = email,
                     EmailConfirmed = true,
+                    DateOfRegistration = DateTime.Now,
                     Sex = "0"
                 };
                 var createResult = await _userManager.CreateAsync(newUser);
@@ -217,6 +218,8 @@ namespace BlogIT.MVC.Controllers
                     user.Email = model.Email;
                     user.UserName = model.UserName;
                     user.Birthday = model.Birthday;
+                    user.Description = model.Description;
+                    user.ShortDescription = model.ShortDescription;
                     user.Sex = model.Sex;
                     if (file != null)
                     {

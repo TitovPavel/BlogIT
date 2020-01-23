@@ -13,5 +13,8 @@ namespace BlogIT.DB.Models
         public List<Rating> Ratings { get; set; }        
         public FileModel Avatar { get; set; }
         public int? AvatarId { get; set; }
+        public DateTime DateOfRegistration { get; set; }
+        public string ShortDescription { get; set; }
+        public string Description { get; set; }
     }
 }

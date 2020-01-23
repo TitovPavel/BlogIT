@@ -169,7 +169,8 @@
 
             let aImage = document.createElement('a');
             aImage.classList.add("pull-left");
-
+            aImage.setAttribute("href", "/Account/Profile/" + chatMessage.userId);
+            
             let profilePhotoSmall = document.createElement('div');
             profilePhotoSmall.classList.add("profile-photo-small");
 
@@ -189,10 +190,18 @@
             let mediaBody = document.createElement('div');
             mediaBody.classList.add("media-body");
 
+            let aMediaHeading = document.createElement('a');
+            aMediaHeading.setAttribute("href", "/Account/Profile/" + chatMessage.userId);
+            
+
             let mediaHeading = document.createElement('h5');
             mediaHeading.classList.add("media-heading");
             mediaHeading.textContent = chatMessage.userName;
-            mediaBody.append(mediaHeading);
+
+            aMediaHeading.append(mediaHeading);
+
+
+            mediaBody.append(aMediaHeading);
 
             let mediaHeadingLike = document.createElement('h5');
 

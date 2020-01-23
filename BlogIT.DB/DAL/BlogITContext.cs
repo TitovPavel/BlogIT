@@ -96,6 +96,9 @@ namespace BlogIT.DB.DAL
         {
             builder.Property(p => p.Sex).IsRequired();
             builder.Property(p => p.Birthday).IsRequired();
+            builder.Property(p => p.Description).IsRequired(false).HasMaxLength(255);
+            builder.Property(p => p.ShortDescription).IsRequired(false).HasMaxLength(1024);
+            builder.Property(p => p.DateOfRegistration).IsRequired();
             builder.HasOne(p => p.Avatar).WithOne().HasForeignKey<User>(p => p.AvatarId);
         }
     }

@@ -26,7 +26,7 @@
                                         @Model.UserName
                                     </font>
                                 </font><br>
-                                <small><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Краткое Описание добавить пользователю</font></font></small>
+                                       <small>@Model.ShortDescription</small>
                             </h4>
                         </div>
                     </div>
@@ -34,9 +34,9 @@
             </div>
             <div class="row">
                 <div class="col-md-6 ml-auto mr-auto text-center">
-                    <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Описание добавить пользователю </font></font></p>
+                    <p>@Model.Description</p>
                     <br>
-                    <a asp-controller="Party" asp-action="List" asp-route-id="@Model.Id">@Localizer["ListOfMyParties"]</a>
+                    <p>@Localizer["DateOfRegistration"] @Model.DateOfRegistration.ToString("D")</p>
                 </div>
             </div>
         </div>
