@@ -36,12 +36,16 @@ namespace BlogIT.MVC
                 options.UseSqlServer(Configuration.GetConnectionString("BlogITDatabase")));
 
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<BlogITContext>();
+                .AddEntityFrameworkStores<BlogITContext>()
+                .AddDefaultTokenProviders();
 
             services.AddTransient<INewsService, NewsService>();
             services.AddTransient<ILikeService, LikeService>();
             services.AddTransient<IPhotoService, PhotoService>();
-            
+            services.AddTransient<IEmailService, EmailService>();
+
+            services.AddSingleton(Configuration);
+
             services.AddAutoMapper(typeof(Mappings.MappingProfile));
 
             services.AddAuthorization();
@@ -50,6 +54,11 @@ namespace BlogIT.MVC
                 .AddCookie(options => 
                 {
                     options.LoginPath = new PathString("/Account/Login");
+                })
+                .AddFacebook(facebookOptions =>
+                {
+                    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
+                    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
                 });
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");

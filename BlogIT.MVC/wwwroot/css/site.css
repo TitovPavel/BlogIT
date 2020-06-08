@@ -36,7 +36,6 @@ body {
 .form-signin {
     width: 100%;
     max-width: 330px;
-    padding: 15px;
     margin: 0 auto;
 }
 
@@ -160,4 +159,48 @@ img {
 .media .like-down {
     color: #f5593d;
     padding-left: 10px;
+}
+
+.rating {
+    height: 25px;
+}
+
+.card  .small-rating {
+    height: 15px;
+}
+
+
+.tagcloud {
+    font-size: 16px;
+}
+
+.tagcloud--item {
+    padding: 2px 4px;
+    background-color: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+    .tagcloud--item:hover {
+        background-color: rgba(0,0,0,.1);
+        border: 1px solid #333;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        opacity: 1 !important;
+        z-index: 100 !important;
+    }
+
+.light .tagcloud--item {
+    color: #fff;
+}
+
+    .light .tagcloud--item:hover {
+        background-color: rgba(255,255,255,.1);
+        border: 1px solid #fff;
+    }
+
+.cloud-tags-calendar {
+    position: sticky;
+    top: 0;
 }

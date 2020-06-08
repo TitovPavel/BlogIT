@@ -11,5 +11,7 @@ namespace BlogIT.MVC.ViewModels
         public string Category { get; set; }
         public int CategoryId { get; set; }
         public int CountsOfComments { get; set; }
+        public int RateAverage { get; set; }
+
     }
 }

@@ -15,12 +15,12 @@
                             <i class="fa fa-heart-o"></i>
                         </div>
                         <div class="description">
-                            <h3> Party! </h3>
-                            <p>Приходите на вечеринки друзей и организовывайте свои.</p>
+                            <h3> BlogIT </h3>
+                            <p>News blog.</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 col-md-6 col-sm-5 col-12 mr-auto">
+                <div class="col-lg-6 col-md-6 col-sm-5 col-12 ml-auto mr-auto">
 
                     <div class="card card-register">
                         <h3 class="card-title text-center">
@@ -30,9 +30,15 @@
                         </h3>
 
                         <div class="social">
-                            <button href="" class="btn btn-just-icon btn-facebook"><i class="fa fa-facebook"></i></button>
-                            <button href="" class="btn btn-just-icon btn-google"><i class="fa fa-google"></i></button>
-                            <button href="" class="btn btn-just-icon btn-twitter"><i class="fa fa-twitter"></i></button>
+                            <a class="btn btn-just-icon btn-facebook"
+                               asp-route-provider="Facebook"
+                               asp-action="LoginWhithOAuth"><i class="fa fa-facebook"></i></a>
+                            <a class="btn btn-just-icon btn-google"
+                               asp-route-provider="Google"
+                               asp-action="LoginWhithOAuth"><i class="fa fa-google"></i></a>
+                            <a class="btn btn-just-icon btn-twitter"
+                               asp-route-provider="Twitter"
+                               asp-action="LoginWhithOAuth"><i class="fa fa-twitter"></i></a>
                         </div>
 
                         <div class="division">

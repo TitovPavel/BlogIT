@@ -37,7 +37,7 @@ namespace BlogIT.MVC.Helpers
             tagDivRow.AddCssClass("row");
 
             TagBuilder tagDivCol = new TagBuilder("div");
-            tagDivCol.AddCssClass("col-md-8 ml-auto mr-auto");
+            tagDivCol.AddCssClass("col-md-10 ml-auto mr-auto");
 
             TagBuilder tagDivCard = new TagBuilder("div");
             tagDivCard.AddCssClass("row card card-blog card-plain text-center");
@@ -88,8 +88,8 @@ namespace BlogIT.MVC.Helpers
             tagDivCardCategory.InnerHtml.AppendHtml(tagDivDateTime);
 
           
-                TagBuilder tagDivCountComments = new TagBuilder("div");
-                tagDivCountComments.AddCssClass("pull-right");
+                TagBuilder tagDivPullRight = new TagBuilder("div");
+                tagDivPullRight.AddCssClass("pull-right");
 
                 TagBuilder tagAComments = new TagBuilder("a");
                 tagAComments.Attributes["href"] = urlHelper.Action(ActionName, ControllerName, new { id = NewsView.Id }, null, null, "chatList");
@@ -101,9 +101,36 @@ namespace BlogIT.MVC.Helpers
 
                 tagAComments.InnerHtml.AppendHtml(tagCountComments);
 
-                tagDivCountComments.InnerHtml.AppendHtml(tagAComments);
+                tagDivPullRight.InnerHtml.AppendHtml(tagAComments);
+
+
+
+
+            TagBuilder tagDivStars = new TagBuilder("div");
             
-                tagDivCardCategory.InnerHtml.AppendHtml(tagDivCountComments);
+            for(int i = 1; i <= 5 ; i++)
+            {
+                TagBuilder tagDivStar = new TagBuilder("img");
+                tagDivStar.AddCssClass("small-rating");
+
+                if(i <= NewsView.RateAverage)
+                { 
+                    tagDivStar.Attributes["src"] = "/Files/FilledStar.png";
+                }
+                else
+                {
+                    tagDivStar.Attributes["src"] = "/Files/EmptyStar.png";
+                }
+
+                tagDivStars.InnerHtml.AppendHtml(tagDivStar);
+            }
+
+
+            tagDivPullRight.InnerHtml.AppendHtml(tagDivStars);
+
+
+
+            tagDivCardCategory.InnerHtml.AppendHtml(tagDivPullRight);
 
 
 

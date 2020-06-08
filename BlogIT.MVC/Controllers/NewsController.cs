@@ -1,19 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using BlogIT.DB.BL;
 using BlogIT.DB.Models;
+using BlogIT.DB.Specifications;
 using BlogIT.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using static BlogIT.DB.Specifications.NewsFilterPaginatedSpecification;
 
 namespace BlogIT.MVC.Controllers
 {
-    //[Authorize(Roles = "admin")]
+    
     [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
     public class NewsController : Controller
     {
@@ -31,46 +34,28 @@ namespace BlogIT.MVC.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index(string searchString, int page = 1,
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Index(string searchString, int page = 1,
             SortState sortOrder = SortState.DateTimeDesc)
         {
 
             int pageSize = 3;
+       
+          
+            var filterSpecification = new NewsFilterSpecification(searchString, null, DateTime.MinValue, 0, false);
 
-            IQueryable<News> source = _newsService.ListAll();
+            var filterPaginatedSpecification =
+                new NewsFilterPaginatedSpecification((page - 1) * pageSize, pageSize, searchString, null, DateTime.MinValue, 0, false);
+            filterPaginatedSpecification.ApplyOrder(sortOrder);
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                source = source.Where(p => p.Title.Contains(searchString) || p.Tags.Contains(searchString) || p.Description.Contains(searchString) || p.NewsText.Contains(searchString) || p.ChatMessages.Any(p => p.Message.Contains(searchString)));
-            }
+            var itemsOnPage = await _newsService.ListNewsAsync(filterPaginatedSpecification);
+            var totalItems = await _newsService.CountNewsAsync(filterSpecification);
 
-            // сортировка
-            switch (sortOrder)
-            {
-                case SortState.TitleDesc:
-                    source = source.OrderByDescending(s => s.Title);
-                    break;
-                case SortState.DateTimeAsc:
-                    source = source.OrderBy(s => s.DateTime);
-                    break;
-                case SortState.DateTimeDesc:
-                    source = source.OrderByDescending(s => s.DateTime);
-                    break;
-                case SortState.WriterAsc:
-                    source = source.OrderBy(s => s.Writer.UserName);
-                    break;
-                case SortState.WriterDesc:
-                    source = source.OrderByDescending(s => s.Writer.UserName);
-                    break;
-                default:
-                    source = source.OrderBy(s => s.Title);
-                    break;
-            }
+            var items = _mapper.Map<IReadOnlyList<News>, List<ItemNewsListViewModel>>(itemsOnPage);
 
-            var count = source.Count();
-            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ProjectTo<ItemNewsListViewModel>(_mapper.ConfigurationProvider).ToList();
 
-            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+
+            PageViewModel pageViewModel = new PageViewModel(totalItems, page, pageSize);
 
             NewsListViewModel newsListViewModel = new NewsListViewModel();
             newsListViewModel.ItemNewsListViewModel = items;
@@ -83,6 +68,7 @@ namespace BlogIT.MVC.Controllers
 
         }
 
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             CreateNewsViewModel createNewsViewModel = new CreateNewsViewModel();
@@ -90,6 +76,7 @@ namespace BlogIT.MVC.Controllers
             return View(createNewsViewModel);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public IActionResult Create(CreateNewsViewModel createNewsViewModel)
         {
@@ -107,6 +94,7 @@ namespace BlogIT.MVC.Controllers
             return View(createNewsViewModel);
         }
 
+        [Authorize(Roles = "admin")]
         public IActionResult Edit(int id)
         {
             News news = _newsService.GetNewsById(id);
@@ -120,6 +108,7 @@ namespace BlogIT.MVC.Controllers
             return View(editNewsViewModel);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public IActionResult Edit(EditNewsViewModel editNewsViewModel)
         {
@@ -141,12 +130,14 @@ namespace BlogIT.MVC.Controllers
         {
 
             News news = _newsService.GetNewsById(id);
-            NewsViewModel itemNewsListViewModel = _mapper.Map<NewsViewModel>(news);
-          
-            return View(itemNewsListViewModel);
+            NewsViewModel newsViewModel = _mapper.Map<NewsViewModel>(news);
+            newsViewModel.CurrentUserRating = _newsService.GetCurrentUserRating(news.Id, _userManager.GetUserId(User));
+
+            return View(newsViewModel);
 
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public ActionResult Delete(int id)
         {
@@ -154,6 +145,28 @@ namespace BlogIT.MVC.Controllers
             _newsService.DeleteNewsById(id);
 
             return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "user, admin")]
+        [HttpPost]
+        public JsonResult PostRating(RatingViewModel ratingViewModel)
+        {
+
+            string userId = _userManager.GetUserId(User);
+
+            if(userId!=null)
+            {
+                Rating rating = _mapper.Map<Rating>(ratingViewModel);
+                rating.UserId = userId;
+
+                _newsService.SetRating(rating);
+
+                return Json("You rated this " + ratingViewModel.Rate.ToString() + " star(s)");
+            }
+            else
+            {
+                return Json("Need to register");
+            }
         }
     }
 }

@@ -36,7 +36,7 @@ namespace BlogIT.MVC.SignalR
         {
             string userName = Context.User.Identity.Name;
             User user = await _userManager.FindByNameAsync(userName);
-            user.Avatar = _photoService.GetFileByID((int)user.AvatarId);
+            user.Avatar = _photoService.GetFileByID(user.AvatarId??0);
 
             ChatMessage chatMessage = new ChatMessage()
             {
@@ -69,7 +69,7 @@ namespace BlogIT.MVC.SignalR
         {         
             await Groups.AddToGroupAsync(Context.ConnectionId, newsId.ToString());
          
-            List<ChatMessage> chatMessages = _newsService.GetChatMessagesByPartyId(newsId).ToList(); ;
+            List<ChatMessage> chatMessages = _newsService.GetChatMessagesByPartyId(newsId);
 
             string userName = Context.User.Identity.Name;
             User user = await _userManager.FindByNameAsync(userName);

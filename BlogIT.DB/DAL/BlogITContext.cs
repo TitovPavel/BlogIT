@@ -20,6 +20,7 @@ namespace BlogIT.DB.DAL
         public DbSet<Tag> Tags { get; set; }
         public DbSet<NewsTag> NewsTags { get; set; }
         public DbSet<Like> Likes { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +34,7 @@ namespace BlogIT.DB.DAL
             modelBuilder.ApplyConfiguration(new TagsConfiguration());
             modelBuilder.ApplyConfiguration(new NewsTagsConfiguration());
             modelBuilder.ApplyConfiguration(new LikeConfiguration());
+            modelBuilder.ApplyConfiguration(new RatingConfiguration());
 
             Initialization(modelBuilder);
         }
@@ -94,6 +96,9 @@ namespace BlogIT.DB.DAL
         {
             builder.Property(p => p.Sex).IsRequired();
             builder.Property(p => p.Birthday).IsRequired();
+            builder.Property(p => p.Description).IsRequired(false).HasMaxLength(255);
+            builder.Property(p => p.ShortDescription).IsRequired(false).HasMaxLength(1024);
+            builder.Property(p => p.DateOfRegistration).IsRequired();
             builder.HasOne(p => p.Avatar).WithOne().HasForeignKey<User>(p => p.AvatarId);
         }
     }
@@ -118,6 +123,8 @@ namespace BlogIT.DB.DAL
             builder.Property(p => p.Tags).IsRequired().HasMaxLength(1024);
             builder.Property(p => p.NewsText).IsRequired().HasMaxLength(10240);
             builder.Property(p => p.Deleted).IsRequired().HasDefaultValue(false);
+            builder.Property(p => p.RateCount).IsRequired().HasDefaultValue(0);
+            builder.Property(p => p.RateAverage).IsRequired().HasDefaultValue(0);
             builder.HasOne(p => p.Category)
                .WithMany(t => t.News)
                .HasForeignKey(p => p.CategoryId);
@@ -186,6 +193,22 @@ namespace BlogIT.DB.DAL
                 .WithMany(t => t.Like)
                 .HasForeignKey(p => p.ChatMessageId);
         }
+       
     }
-}
 
+    public class RatingConfiguration : IEntityTypeConfiguration<Rating>
+    {
+        public void Configure(EntityTypeBuilder<Rating> builder)
+        {
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.Rate).IsRequired().HasDefaultValue(0);
+            builder.HasOne(p => p.User)
+               .WithMany(t => t.Ratings)
+               .HasForeignKey(p => p.UserId);
+            builder.HasOne(p => p.News)
+                .WithMany(t => t.Ratings)
+                .HasForeignKey(p => p.NewsId);
+        }
+    }
+
+}

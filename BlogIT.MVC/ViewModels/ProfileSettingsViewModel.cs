@@ -17,6 +17,10 @@ namespace BlogIT.MVC.ViewModels
         public string Sex { get; set; }
         public int AvatarID { get; set; }
         public bool AvatarExist { get; set; }
+        [Display(Name = "ShortDescription")]
+        public string ShortDescription { get; set; }
+        [Display(Name = "Description")]
+        public string Description { get; set; }
 
     }
 }

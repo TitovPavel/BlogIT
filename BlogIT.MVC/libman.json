@@ -74,6 +74,14 @@
         "jquery-ui.css",
         "jquery-ui.min.css"
       ]
+    },
+    {
+      "library": "TagCloud@2.0.2",
+      "destination": "wwwroot/lib/TagCloud/",
+      "files": [
+        "dist/TagCloud.js",
+        "dist/TagCloud.min.js"
+      ]
     }
   ]
 }

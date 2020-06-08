@@ -10,6 +10,8 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using BlogIT.DB.BL;
+using System.Linq;
+using Microsoft.AspNetCore.Authentication;
 
 namespace BlogIT.MVC.Controllers
 {
@@ -20,18 +22,21 @@ namespace BlogIT.MVC.Controllers
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<AccountController> _localizer;
         private readonly IPhotoService _photoService;
+        private readonly IEmailService _emailService;
 
         public AccountController(UserManager<User> userManager, 
             SignInManager<User> signInManager, 
             IMapper mapper, 
             IStringLocalizer<AccountController> localizer,
-            IPhotoService photoService)
+            IPhotoService photoService,
+            IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _mapper = mapper;
             _localizer = localizer;
             _photoService = photoService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -46,7 +51,7 @@ namespace BlogIT.MVC.Controllers
             if (ModelState.IsValid)
             {
                 User user = _mapper.Map<User>(registerViewModel);
-
+                
                 var result = await _userManager.CreateAsync(user, registerViewModel.Password);
                 if (result.Succeeded)
                 {
@@ -58,8 +63,18 @@ namespace BlogIT.MVC.Controllers
                     var gender = new Claim(ClaimTypes.Gender, registerViewModel.Sex.ToString(), typeof(String).ToString());
                     await _userManager.AddClaimAsync(user, gender);
 
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var callbackUrl = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new { userId = user.Id, code = code },
+                        protocol: HttpContext.Request.Scheme);
+  
+                    await _emailService.SendEmailAsync(user.Email, "Confirm your account",
+                        $"Подтвердите регистрацию, перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+
+                    return RedirectToAction("Confirm", "Account");
+
                 }
                 else
                 {
@@ -70,6 +85,32 @@ namespace BlogIT.MVC.Controllers
                 }
             }
             return View(registerViewModel);
+        }
+
+        [HttpGet]
+        public IActionResult Confirm()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return View("Error");
+            }
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+            if (result.Succeeded)
+                return RedirectToAction("Index", "Home");
+            else
+                return View("Error");
         }
 
         [HttpGet]
@@ -84,6 +125,17 @@ namespace BlogIT.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                var user = await _userManager.FindByNameAsync(model.Name);
+                if (user != null)
+                {
+                    if (!await _userManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError(string.Empty, "Вы не подтвердили свой email");
+                        return View(model);
+                    }
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(model.Name, model.Password, model.RememberMe, false);
 
                 if (result.Succeeded)
@@ -98,6 +150,46 @@ namespace BlogIT.MVC.Controllers
                 }
             }
             return View(model);
+        }
+
+
+        public IActionResult LoginWhithOAuth(string provider)
+        {
+            var authenticationProperties = _signInManager.ConfigureExternalAuthenticationProperties(provider, Url.Action(nameof(HandleExternalLogin)));
+            return Challenge(authenticationProperties, provider);
+        }
+
+        public async Task<IActionResult> HandleExternalLogin()
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: true);
+
+            if (!result.Succeeded) 
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+                var newUser = new User
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true,
+                    DateOfRegistration = DateTime.Now,
+                    Sex = "0"
+                };
+                var createResult = await _userManager.CreateAsync(newUser);
+                if (!createResult.Succeeded)
+                    throw new Exception(createResult.Errors.Select(e => e.Description).Aggregate((errors, error) => $"{errors}, {error}"));
+
+                await _userManager.AddToRoleAsync(newUser, "user");
+
+                await _userManager.AddLoginAsync(newUser, info);
+                var newUserClaims = info.Principal.Claims.Append(new Claim("userId", newUser.Id));
+                await _userManager.AddClaimsAsync(newUser, newUserClaims);
+                await _signInManager.SignInAsync(newUser, isPersistent: false);
+                await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -126,6 +218,8 @@ namespace BlogIT.MVC.Controllers
                     user.Email = model.Email;
                     user.UserName = model.UserName;
                     user.Birthday = model.Birthday;
+                    user.Description = model.Description;
+                    user.ShortDescription = model.ShortDescription;
                     user.Sex = model.Sex;
                     if (file != null)
                     {

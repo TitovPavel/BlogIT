@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlogIT.MVC.ViewModels
 {
@@ -11,6 +12,12 @@ namespace BlogIT.MVC.ViewModels
         public string Email { get; set; }
         public int AvatarID { get; set; }
         public bool AvatarExist { get; set; }
+        [Display(Name = "DateOfRegistration")]
+        public DateTime DateOfRegistration { get; set; }
+        [Display(Name = "ShortDescription")]
+        public string ShortDescription { get; set; }
+        [Display(Name = "Description")]
+        public string Description { get; set; }
 
     }
 }

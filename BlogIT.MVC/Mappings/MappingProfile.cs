@@ -12,7 +12,9 @@ namespace BlogIT.MVC.Mappings
 
         public MappingProfile()
         {
-            CreateMap<RegisterViewModel, User>().ReverseMap();
+            CreateMap<User, RegisterViewModel>();
+            CreateMap<RegisterViewModel, User>()
+                .ForMember(d => d.DateOfRegistration, o => o.MapFrom(s => DateTime.Now));
             CreateMap<CreateUserViewModel, User>().ReverseMap();
             CreateMap<EditUserViewModel, User>().ReverseMap();
             CreateMap<User, UserViewModel>()
@@ -42,11 +44,14 @@ namespace BlogIT.MVC.Mappings
                 .ForMember(d => d.Date, o => o.MapFrom(s => s.Date.ToString()))
                 .ForMember(d => d.AvatarPath, o => o.MapFrom(s => s.User.Avatar != null ? $"/{s.User.Avatar.Path}" : "/Files/placeholder.jpg"))
                 .ForMember(d => d.LikeUpCount, o => o.MapFrom(s => s.Like.Where(p => p.LikeUp == true && p.ChatMessageId == s.Id).Count()))
-                .ForMember(d => d.LikeDownCount, o => o.MapFrom(s => s.Like.Where(p => p.LikeDown == true && p.ChatMessageId == s.Id).Count()));
+                .ForMember(d => d.LikeDownCount, o => o.MapFrom(s => s.Like.Where(p => p.LikeDown == true && p.ChatMessageId == s.Id).Count()))
+                .ForMember(d => d.UserId, o => o.MapFrom(s => s.User.Id));
             CreateMap<News, NewsAnnotationViewModel>()
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Title))
                 .ForMember(d => d.CategoryId, o => o.MapFrom(s => s.Category.Id))
                 .ForMember(d => d.CountsOfComments, o => o.MapFrom(s => s.ChatMessages.Count));
+            CreateMap<RatingViewModel, Rating>();
+
 
         }
     }

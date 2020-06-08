@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace BlogIT.DB.Models
 {
-    public class News
+    public class News : BaseEntity
     {
-        public int Id { get; set; }
         public string Title { get; set; }
         public DateTime DateTime { get; set; }
         public string Description { get; set; }
@@ -18,5 +17,9 @@ namespace BlogIT.DB.Models
         public bool Deleted { get; set; }
         public List<ChatMessage> ChatMessages { get; set; }
         public List<NewsTag> NewsTag { get; set; }
+        public List<Rating> Ratings { get; set; }
+        public int RateCount { get; set; }
+        public int RateAverage { get; set; }
+
     }
 }
